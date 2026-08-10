@@ -172,6 +172,48 @@ section.foto{padding-top:clamp(28px,5vw,44px); padding-bottom:clamp(28px,5vw,44p
 .card{border:1px solid rgba(0,0,0,.05)}
 .dark .rule{background:#3a3a3c}
 
+
+/* ── FOTOS: PADRÃO ÚNICO ────────── */
+section.foto{padding:0 0 clamp(30px,6vw,52px)}
+section.foto figure{margin:0}
+section.foto figure img{
+  width:100%; aspect-ratio:4/5; object-fit:cover;
+  border-radius:0; outline:none;
+}
+@media (min-width:640px){ section.foto figure img{aspect-ratio:3/2} }
+section.foto figcaption{padding:16px var(--pad) 0}
+
+/* trio no mesmo padrão das outras */
+.trio figure img{aspect-ratio:4/5; object-fit:cover; border-radius:14px}
+.duo figure img,.trio figure img{outline:1px solid rgba(0,0,0,.07); outline-offset:-1px}
+.trio figcaption{font-size:13px; margin-top:10px}
+
+/* seção de foto assume o fundo de quem vem depois */
+section.foto{background:var(--paper)}
+section.foto.on-soft{background:var(--wash)}
+.dark + section.foto{margin-top:0}
+
+/* ── CORAÇÕES EXPLODINDO ────────── */
+.pop-heart{
+  position:fixed; pointer-events:none; z-index:9999;
+  font-size:26px; will-change:transform,opacity;
+  animation:popup 1.15s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes popup{
+  0%  {opacity:0; transform:translate(-50%,-50%) scale(.3)}
+  18% {opacity:1; transform:translate(-50%,-50%) scale(1.25)}
+  100%{opacity:0; transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.75) rotate(var(--rot))}
+}
+.tap{cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent}
+.bigbtn{
+  display:block; width:100%; border:none; cursor:pointer;
+  background:#fff; color:#000; font-weight:600; font-size:17px;
+  padding:20px 28px; border-radius:40px; margin-top:30px;
+  font-family:inherit; min-height:56px;
+  transition:transform var(--dur-fast) var(--ease);
+}
+.bigbtn:hover{transform:scale(1.03)} .bigbtn:active{transform:scale(.96)}
+
 /* ── REVEAL NO SCROLL ───────────── */
 .rv{opacity:0; transform:translateY(26px); transition:opacity .65s var(--ease), transform .65s var(--ease)}
 .rv.in{opacity:1; transform:none}
@@ -191,7 +233,7 @@ section.foto{padding-top:clamp(28px,5vw,44px); padding-bottom:clamp(28px,5vw,44p
 <header class="hero">
   <div class="eyebrow">Edição Especial</div>
   <h1 class="shine">1 ano</h1>
-  <div class="heart">❤️</div>
+  <div class="heart tap" data-boom>❤️</div>
   <div class="rule"></div>
   <div class="dates tnum">10.08.2025 &nbsp;→&nbsp; 10.08.2026</div>
   <p class="sub">a edição que eu passei 365 dias<br>morrendo de vontade de escrever</p>
@@ -433,7 +475,7 @@ section.foto{padding-top:clamp(28px,5vw,44px); padding-bottom:clamp(28px,5vw,44p
 </section>
 
 <!-- ═══ FOTO METRÔ ═══ -->
-<section class="rv foto">
+<section class="rv foto on-soft">
   <figure><img src="fotos/metro.jpg" alt="No metrô" loading="lazy"><figcaption>a caminho, fazendo careta no metrô 🚇</figcaption></figure>
 </section>
 
@@ -465,6 +507,7 @@ section.foto{padding-top:clamp(28px,5vw,44px); padding-bottom:clamp(28px,5vw,44p
     <p class="muted" style="font-size:14px; margin-top:14px">(um ano depois e a frase só ficou mais literal)</p>
   </div>
 
+  <button class="bigbtn" data-boom data-muitos>aperta aqui 🤍</button>
   <div style="border-top:1px solid #1c1c1e; margin:34px 0 24px"></div>
   <p class="muted" style="margin-bottom:0">Atenciosamente,<br><strong style="font-size:22px; letter-spacing:-.02em">Seu futuro marido</strong><br><span style="font-size:14px; color:#6e6e73">(versão 1 ano oficializada, e cada vez menos "futuro")</span></p>
 </section>
@@ -497,6 +540,51 @@ section.foto{padding-top:clamp(28px,5vw,44px); padding-bottom:clamp(28px,5vw,44p
     S.textContent = pad(seg%60);
   }
   tick(); setInterval(tick, 1000);
+})();
+
+
+// corações explodindo
+(function(){
+  var emojis = ['❤️','🤍','💗','💓','💖','😍','🥰'];
+  var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function boom(x, y, qtd){
+    if(reduz) return;
+    for(var i=0;i<qtd;i++){
+      (function(i){
+        setTimeout(function(){
+          var h = document.createElement('span');
+          h.className = 'pop-heart';
+          h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+          var ang = Math.random()*Math.PI*2;
+          var dist = 60 + Math.random()*130;
+          h.style.setProperty('--dx', Math.cos(ang)*dist + 'px');
+          h.style.setProperty('--dy', (Math.sin(ang)*dist - 70) + 'px');
+          h.style.setProperty('--rot', (Math.random()*80-40) + 'deg');
+          h.style.left = x + 'px'; h.style.top = y + 'px';
+          h.style.fontSize = (18 + Math.random()*20) + 'px';
+          document.body.appendChild(h);
+          setTimeout(function(){ h.remove(); }, 1250);
+        }, i*45);
+      })(i);
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    var alvo = e.target.closest('[data-boom]');
+    if(!alvo) return;
+    var r = alvo.getBoundingClientRect();
+    boom(r.left + r.width/2, r.top + r.height/2, alvo.hasAttribute('data-muitos') ? 26 : 10);
+  });
+
+  // abrir uma carta solta corações no lugar do clique
+  document.querySelectorAll('details').forEach(function(d){
+    d.addEventListener('toggle', function(){
+      if(!d.open) return;
+      var r = d.getBoundingClientRect();
+      boom(r.left + r.width/2, r.top + 40, 8);
+    });
+  });
 })();
 
 // reveal ao rolar
