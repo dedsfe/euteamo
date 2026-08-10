@@ -254,6 +254,21 @@
     width:100%;height:100%;object-fit:cover;
     transition:transform .7s var(--ease);
   }
+  /* preview que roda no hover, por cima da foto */
+  .poster video{
+    position:absolute;inset:0;z-index:1;
+    width:100%;height:100%;object-fit:cover;
+    opacity:0;transition:opacity .4s var(--ease);
+  }
+  .poster video.tocando{opacity:1}
+  /* selo de que esse card tem video */
+  .poster .temvideo{
+    position:absolute;left:9px;top:9px;z-index:3;
+    width:26px;height:26px;border-radius:50%;
+    background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+    display:grid;place-items:center;font-size:10px;color:#fff;padding-left:2px;
+  }
+  .card:hover .poster .temvideo{opacity:0;transition:opacity .2s}
   .poster .shade{
     position:absolute;inset:0;
     background:
@@ -413,6 +428,18 @@
   .sheet::-webkit-scrollbar{display:none}
   .sheet-hero{position:relative;aspect-ratio:16/9;background:#222;overflow:hidden}
   .sheet-hero img{width:100%;height:100%;object-fit:cover}
+  .sheet-hero video{
+    position:absolute;inset:0;z-index:4;
+    width:100%;height:100%;object-fit:contain;background:#000;
+  }
+  /* com video rodando o gradiente atrapalha os controles */
+  .sheet-hero.comvideo .g{background:linear-gradient(to top,#181818 0%,rgba(24,24,24,0) 26%)}
+  .sheet-hero.comvideo .hero-in{display:none}
+  .sheet-hero.comvideo + .sheet-body .titulo-video{
+    display:block;margin:0 0 4px;font-size:clamp(22px,3vw,32px);font-weight:700;
+    letter-spacing:-0.03em;color:#fff;line-height:1.1;
+  }
+  .sheet-body .titulo-video{display:none}
   .sheet-hero .g{
     position:absolute;inset:0;z-index:2;
     background:
@@ -516,7 +543,7 @@
       <div class="track" data-track>
 
         <button class="card" data-open="ep-jb">
-          <div class="poster">
+          <div class="poster" data-video="videos/jb.mp4">
             <img src="fotos/jb.jpg" alt="Show dos Jonas Brothers" style="object-position:center 28%">
             <div class="shade"></div>
           </div>
@@ -526,7 +553,7 @@
         </button>
 
         <button class="card" data-open="ep-metro">
-          <div class="poster">
+          <div class="poster" data-video="videos/metro.mp4">
             <img src="fotos/metro.jpg" alt="No metr&ocirc;" style="object-position:center 38%">
             <div class="shade"></div>
           </div>
@@ -536,7 +563,7 @@
         </button>
 
         <button class="card" data-open="ep6">
-          <div class="poster">
+          <div class="poster" data-video="videos/nos.mp4">
             <img src="fotos/nos.jpg" alt="N&oacute;s" style="object-position:center 26%">
             <div class="shade"></div>
           </div>
@@ -561,7 +588,7 @@
       <div class="track" data-track>
 
         <button class="card" data-open="ep-kings">
-          <div class="poster">
+          <div class="poster" data-video="videos/kings.mp4">
             <img src="fotos/kings.jpg" alt="Final da Kings League" style="object-position:center 30%">
             <div class="shade"></div>
           </div>
@@ -570,7 +597,7 @@
         </button>
 
         <button class="card" data-open="ep-copa">
-          <div class="poster">
+          <div class="poster" data-video="videos/copa.mp4">
             <img src="fotos/copa.jpg" alt="Dia de jogo" style="object-position:center 26%">
             <div class="shade"></div>
           </div>
@@ -579,7 +606,7 @@
         </button>
 
         <button class="card" data-open="sobre">
-          <div class="poster">
+          <div class="poster" data-video="videos/capa.mp4">
             <img src="fotos/capa.jpg" alt="Danyelle e Andr&eacute;" style="object-position:center 24%">
             <div class="shade"></div>
           </div>
@@ -620,18 +647,12 @@
     <button class="close" id="closeBtn" aria-label="Fechar">✕</button>
     <div class="sheet-hero" id="sheetHero"></div>
     <div class="sheet-body">
+      <h4 class="titulo-video" id="sheetTitle2"></h4>
       <div class="sheet-meta" id="sheetMeta"></div>
       <div class="txt" id="sheetTxt"></div>
     </div>
   </div>
 </div>
-
-<!-- blur direcional (só no eixo Y) — é o que dá cara de motion blur de verdade -->
-<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none">
-  <filter id="mblur" x="-6%" y="-24%" width="112%" height="148%" color-interpolation-filters="sRGB">
-    <feGaussianBlur id="mblurStd" in="SourceGraphic" stdDeviation="0 0"/>
-  </filter>
-</svg>
 
 <script src="vendor/motion.dev.js"></script>
 <script>
@@ -760,6 +781,39 @@ document.querySelectorAll(".card").forEach(card => {
   }
 
 
+  /* preview em video: só carrega quando o mouse chega, e some se o arquivo não existir */
+  const src = poster.dataset.video;
+  if (src && matchMedia("(hover:hover) and (pointer:fine)").matches){
+    let vid = null, timer = null;
+
+    const selo = document.createElement("span");
+    selo.className = "temvideo";
+    selo.textContent = "▶";
+    poster.appendChild(selo);
+
+    const liga = () => {
+      timer = setTimeout(() => {
+        if (!vid){
+          vid = document.createElement("video");
+          vid.muted = true; vid.loop = true; vid.playsInline = true; vid.preload = "none";
+          vid.src = src;
+          /* sem o arquivo ainda: cai fora sem quebrar nada */
+          vid.addEventListener("error", () => { vid.remove(); vid = null; selo.remove(); }, { once: true });
+          vid.addEventListener("playing", () => vid.classList.add("tocando"), { once: true });
+          poster.appendChild(vid);
+        }
+        const t = vid.play();
+        if (t && t.catch) t.catch(() => {});
+      }, 480);
+    };
+    const desliga = () => {
+      clearTimeout(timer);
+      if (vid){ vid.pause(); vid.classList.remove("tocando"); vid.currentTime = 0; }
+    };
+    card.addEventListener("pointerenter", liga);
+    card.addEventListener("pointerleave", desliga);
+  }
+
   /* painel que abre no hover */
   const info = document.createElement("div");
   info.className = "card-info";
@@ -823,57 +877,14 @@ document.querySelectorAll(".row").forEach(row => {
   }, { passive: true });
 });
 
-/* ---------- motion blur: o miolo borra na direção do scroll ---------- */
+/* ---------- hero desfoca conforme sai de cena ---------- */
 (function(){
   if (reduce) return;
-  const alvo = document.querySelector(".rows");
-  const std  = document.getElementById("mblurStd");
   const heroImg = document.querySelector("[data-hero-media] img");
-
-  let ultimo = scrollY, v = 0, ligado = false, timer = null, tUltimo = 0;
-
   addEventListener("scroll", () => {
-    const agora = scrollY;
-    /* velocidade do scroll vira quantidade de blur, com teto pra não virar borrão */
-    v = Math.min(Math.abs(agora - ultimo) * .22, 11);
-    ultimo = agora;
-    aplica(v);
-
-    /* o hero desfoca conforme sai de cena */
-    const p = Math.min(agora / (innerHeight * .85), 1);
+    const p = Math.min(scrollY / (innerHeight * .85), 1);
     heroImg.style.filter = p > .05 ? `blur(${(p * 6).toFixed(1)}px)` : "";
-
-    clearTimeout(timer);
-    tUltimo = performance.now();
-    timer = setTimeout(esmaece, 90);
   }, { passive: true });
-
-  function aplica(x){
-    if (x <= .35) return desliga();
-    if (!ligado){ alvo.style.filter = "url(#mblur)"; ligado = true; }
-    std.setAttribute("stdDeviation", "0 " + x.toFixed(2));
-  }
-
-  /* o decaimento roda em timer, não em rAF (em aba de fundo o rAF congela), e é
-     proporcional ao tempo real — se o timer atrasar, o blur some de uma vez em
-     vez de ficar preso na tela */
-  function esmaece(){
-    const agora = performance.now();
-    const dt = Math.max(agora - tUltimo, 1);
-    tUltimo = agora;
-    v *= Math.pow(.55, dt / 45);
-    if (v > .35){ aplica(v); timer = setTimeout(esmaece, 45); }
-    else desliga();
-  }
-
-  function desliga(){
-    v = 0;
-    std.setAttribute("stdDeviation", "0 0");
-    if (ligado){ alvo.style.filter = ""; ligado = false; }
-  }
-
-  /* trocou de aba no meio do scroll: volta limpo */
-  addEventListener("visibilitychange", () => { if (document.hidden){ clearTimeout(timer); desliga(); } });
 })();
 
 /* ---------- rows entram ao aparecer ---------- */
@@ -909,7 +920,7 @@ document.querySelectorAll("[data-scroll]").forEach(btn => {
 
 /* ---------- conteúdo dos episódios ---------- */
 const EPS = {
-  sobre: { title:"Danyelle & André", meta:["1 temporada","365 episódios","L"],
+  sobre: { video:"videos/capa.mp4", title:"Danyelle & André", meta:["1 temporada","365 episódios","L"],
     html:`<p>Começou na igreja, ela com <b>12 anos</b>. Cinco anos de diferença e o tempo todo errado — até
     <b>27 de maio de 2025</b>, quando ele viu as fotos dela e não conseguiu mais evitar.</p>
     <p>Desde então: conversa <b>todo santo dia</b>, sem falhar um. Humor de doido igualzinho. Memes internos
@@ -917,20 +928,20 @@ const EPS = {
     nunca foram longe o bastante.</p>`,
     quote:"você não é academia, mas mexe com todos os meus músculos" },
 
-  ep6: { img:"fotos/nos.jpg", title:"EP 06 — Namoro oficial", meta:["10 ago 2025","Dia 1"],
+  ep6: { video:"videos/nos.mp4", img:"fotos/nos.jpg", title:"EP 06 — Namoro oficial", meta:["10 ago 2025","Dia 1"],
     html:`<p>Depois da bênção, o sim. O dia 1 de 365.</p>` },
 
-  "ep-jb": { img:"fotos/jb.jpg", title:"Jonas Brothers", meta:["Show","Os dois juntos"],
+  "ep-jb": { video:"videos/jb.mp4", img:"fotos/jb.jpg", title:"Jonas Brothers", meta:["Show","Os dois juntos"],
     html:`<p>O primeiro show dos dois. Gritando música que ninguém mais ali sabia que era <i>deles</i>.</p>` },
 
-  "ep-kings": { img:"fotos/kings.jpg", title:"Final da Kings League", meta:["Final","Arquibancada"],
+  "ep-kings": { video:"videos/kings.mp4", img:"fotos/kings.jpg", title:"Final da Kings League", meta:["Final","Arquibancada"],
     html:`<p>Ele o comédia, ela a romântica — ou o contrário, dependendo do dia.</p>`,
     quote:"você é o comédia, eu a romântica" },
 
-  "ep-copa": { img:"fotos/copa.jpg", title:"Dia de jogo", meta:["Momento","Sem roteiro"],
+  "ep-copa": { video:"videos/copa.mp4", img:"fotos/copa.jpg", title:"Dia de jogo", meta:["Momento","Sem roteiro"],
     html:`<p>Dos dias que não tinham nada de especial e por isso mesmo ficaram.</p>` },
 
-  "ep-metro": { img:"fotos/metro.jpg", title:"70 km", meta:["Praia Grande ↔ São Paulo","Toda semana"],
+  "ep-metro": { video:"videos/metro.mp4", img:"fotos/metro.jpg", title:"70 km", meta:["Praia Grande ↔ São Paulo","Toda semana"],
     html:`<p>A distância inteira medida em vagão, plataforma e a hora de voltar.
     Nunca foi longe o suficiente pra fazer diferença.</p>` },
 
@@ -970,10 +981,31 @@ function openSheet(key){
      <div class="hero-in">
        <h4>${d.title}</h4>
        <div class="acts">
-         <button class="btn btn-play">▶&nbsp; Assistir</button>
+         <button class="btn btn-play" data-play>▶&nbsp; Assistir</button>
          <span class="ic">+</span>
        </div>
      </div>`;
+
+  /* "Assistir" troca a capa pelo vídeo de verdade */
+  const btnPlay = sHero.querySelector("[data-play]");
+  if (d.video && btnPlay){
+    btnPlay.addEventListener("click", () => {
+      const v = document.createElement("video");
+      v.src = d.video; v.controls = true; v.autoplay = true; v.playsInline = true;
+      /* sem o arquivo ainda: mantém a capa e avisa em vez de mostrar player quebrado */
+      v.addEventListener("error", () => {
+        sHero.classList.remove("comvideo");
+        btnPlay.textContent = "vídeo ainda não subiu";
+        btnPlay.disabled = true;
+      }, { once: true });
+      sHero.classList.add("comvideo");
+      sHero.appendChild(v);
+    });
+  } else if (btnPlay){
+    btnPlay.style.display = "none";
+  }
+
+  document.getElementById("sheetTitle2").textContent = d.title;
   sMeta.innerHTML = d.meta.map(m => `<span>${m}</span>`).join('<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--gray-3)"></span>');
   sTxt.innerHTML = d.html + (d.quote ? `<div class="quote">“${d.quote}”</div>` : "");
 
@@ -986,6 +1018,7 @@ function openSheet(key){
 }
 
 function closeSheet(){
+  sHero.querySelector("video")?.pause();
   animate(sheet, { opacity: 0, y: 12, scale: .98 }, { duration: .25 });
   animate(scrim, { opacity: 0 }, { duration: .28 });
   setTimeout(() => {

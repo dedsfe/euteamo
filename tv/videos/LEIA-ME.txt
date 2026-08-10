@@ -1,0 +1,11 @@
+Coloque os videos aqui com estes nomes exatos:
+
+  jb.mp4      -> card "Jonas Brothers"
+  metro.mp4   -> card "O caminho ate voce"
+  nos.mp4     -> card "Namoro oficial"
+  kings.mp4   -> card "Final da Kings League"
+  copa.mp4    -> card "Dia de jogo"
+  capa.mp4    -> card "Danyelle & Andre"
+
+Formato: .mp4 (H.264 + AAC). O site funciona normal enquanto o arquivo
+nao existir: o card so mostra a foto, sem o preview.
