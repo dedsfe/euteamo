@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1 Ano — André & Danyelle</title>
+<meta name="theme-color" content="#000000">
+<style>
+:root{
+  --dur-fast:.18s; --dur-normal:.35s; --dur-slow:.6s;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ink:#1d1d1f; --ink-2:#6e6e73; --ink-3:#86868b;
+  --line:#d2d2d7; --wash:#f5f5f7; --paper:#fff;
+  --pad: clamp(20px, 5vw, 40px);
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html{-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif;
+  background:var(--wash); color:var(--ink);
+  font-size:clamp(17px, 1.15vw + 14px, 20px); line-height:1.6;
+}
+img{max-width:100%; height:auto; display:block}
+
+.wrap{max-width:720px; margin:0 auto; background:var(--paper); overflow:hidden}
+@media (min-width:820px){ .wrap{margin:24px auto; border-radius:32px; box-shadow:0 1px 2px rgba(0,0,0,.04),0 20px 60px rgba(0,0,0,.09)} }
+
+section{padding:clamp(48px,9vw,88px) var(--pad)}
+.dark{background:#000; color:#d2d2d7}
+.dark h2,.dark h3,.dark strong{color:#f5f5f7}
+.soft{background:var(--wash)}
+
+.eyebrow{
+  font-size:11px; letter-spacing:3.5px; text-transform:uppercase;
+  font-weight:600; color:var(--ink-3); margin-bottom:14px;
+}
+h1{font-size:clamp(64px,17vw,124px); line-height:.9; font-weight:700; letter-spacing:-.05em}
+h2{font-size:clamp(30px,6.2vw,44px); line-height:1.06; font-weight:700; letter-spacing:-.035em; margin-bottom:26px; text-wrap:balance}
+h3{font-size:clamp(22px,4vw,30px); font-weight:700; letter-spacing:-.02em}
+p{margin-bottom:20px; text-wrap:pretty}
+p:last-child{margin-bottom:0}
+.muted{color:var(--ink-2)}
+.dark .muted{color:#a1a1a6}
+.rule{width:44px; height:1px; background:var(--line); margin:30px auto}
+.dark .rule{background:#3a3a3c}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ── HERO ───────────────────────── */
+.hero{
+  background:#000; color:#f5f5f7; text-align:center;
+  min-height:100svh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:0;
+  padding:calc(env(safe-area-inset-top) + 40px) var(--pad) 40px;
+}
+.hero .eyebrow{color:#86868b}
+.shine{
+  background:linear-gradient(100deg,#f5f5f7 30%,#9b9ba0 48%,#f5f5f7 66%);
+  background-size:240% 100%; -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+  animation:shine 6s linear infinite;
+}
+@keyframes shine{from{background-position:-140% 0} to{background-position:240% 0}}
+.hero .dates{font-size:13px; letter-spacing:3px; color:#86868b; margin-top:4px}
+.hero .sub{font-size:clamp(17px,3.4vw,20px); color:#f5f5f7; margin-top:22px; line-height:1.45; text-wrap:balance}
+.emojis{font-size:26px; letter-spacing:12px; margin-top:30px}
+.heart{font-size:44px; margin-top:24px; display:inline-block; animation:beat 2.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.18)}28%{transform:scale(1)}42%{transform:scale(1.12)}56%{transform:scale(1)}}
+.float{display:inline-block; animation:floaty 3.6s ease-in-out infinite}
+.float.b{animation-duration:4.8s; animation-delay:.5s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.scrollhint{
+  position:absolute; bottom:calc(env(safe-area-inset-bottom) + 26px);
+  font-size:12px; letter-spacing:2px; color:#6e6e73; text-transform:uppercase;
+  animation:floaty 2.4s ease-in-out infinite;
+}
+.hero{position:relative}
+
+/* ── CONTADOR ───────────────────── */
+.counter{text-align:center}
+.counter .big{
+  font-size:clamp(64px,17vw,110px); font-weight:700; letter-spacing:-.05em;
+  line-height:1; margin:18px 0 8px; font-variant-numeric:tabular-nums;
+}
+.counter .unit{font-size:14px; letter-spacing:4px; text-transform:uppercase; color:#86868b; font-weight:600}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:8px}
+.grid3 .n{font-size:clamp(22px,5vw,30px); font-weight:700; letter-spacing:-.03em; color:#f5f5f7; font-variant-numeric:tabular-nums}
+.grid3 .l{font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:#6e6e73; margin-top:5px; font-weight:600}
+
+/* ── CARDS / LISTAS ─────────────── */
+.card{
+  background:var(--wash); border-radius:20px; padding:24px;
+  display:flex; gap:18px; align-items:flex-start; margin-bottom:14px;
+  transition:transform var(--dur-normal) var(--ease);
+}
+.card:hover{transform:translateY(-3px)}
+.card .ico{font-size:28px; line-height:1; flex-shrink:0}
+.card .t{font-weight:600; font-size:clamp(18px,3.6vw,21px); letter-spacing:-.02em; margin-bottom:6px}
+.card .d{font-size:clamp(16px,3.2vw,18px); color:var(--ink-2); line-height:1.55}
+.card.open{background:var(--paper); border:2px dashed var(--line)}
+
+.list li{list-style:none; margin-bottom:28px}
+.list .num{font-size:12px; font-weight:700; color:var(--ink-3); letter-spacing:2px; display:block; margin-bottom:6px; font-variant-numeric:tabular-nums}
+
+/* ── FOTOS ──────────────────────── */
+figure{margin:0}
+figure img{width:100%; border-radius:22px; outline:1px solid rgba(0,0,0,.08); outline-offset:-1px}
+figcaption{font-size:14px; color:var(--ink-3); text-align:center; margin-top:14px}
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.trio{grid-template-columns:repeat(3,1fr)}
+@media (max-width:560px){ .trio{grid-template-columns:1fr 1fr} .trio figure:first-child{grid-column:1/-1} }
+@media (max-width:520px){ .duo{grid-template-columns:1fr} }
+
+/* ── CITAÇÃO ────────────────────── */
+blockquote{
+  border-left:2px solid #48484a; padding-left:22px; margin:30px 0;
+  font-size:clamp(20px,4.2vw,25px); line-height:1.45; font-weight:500;
+  letter-spacing:-.02em; color:#f5f5f7;
+}
+blockquote .who{font-size:11px; letter-spacing:2.5px; color:#6e6e73; text-transform:uppercase; margin-top:16px; font-weight:600; font-variant-numeric:tabular-nums}
+
+/* ── ACRÓSTICO ──────────────────── */
+.acro{display:grid; grid-template-columns:auto 1fr; gap:0 20px; align-items:baseline}
+.acro .letra{font-size:clamp(38px,9vw,52px); font-weight:700; letter-spacing:-.05em; line-height:1.1}
+.acro .txt{font-size:clamp(17px,3.6vw,20px); padding-bottom:20px; align-self:center}
+
+/* ── BOTÃO / PLAYER ─────────────── */
+.btn{
+  display:inline-block; background:#fff; color:#000; font-weight:600;
+  font-size:16px; text-decoration:none; padding:16px 34px; border-radius:40px;
+  transition:transform var(--dur-fast) var(--ease);
+  min-height:44px; min-width:44px;
+}
+.btn:hover{transform:scale(1.04)} .btn:active{transform:scale(.95)}
+.btn.ghost{background:transparent; color:#86868b; font-size:13px; padding:12px 20px; font-weight:500}
+
+/* ── CARTAS QUE ABREM ───────────── */
+details{
+  background:var(--wash); border-radius:18px; margin-bottom:12px;
+  overflow:hidden; transition:background var(--dur-normal) var(--ease);
+}
+details[open]{background:#000; color:#d2d2d7}
+summary{
+  cursor:pointer; list-style:none; padding:22px 24px; font-weight:600;
+  font-size:clamp(17px,3.4vw,19px); letter-spacing:-.02em; min-height:44px;
+  display:flex; align-items:center; gap:14px;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"✉️"; margin-left:auto; transition:transform var(--dur-normal) var(--ease)}
+details[open] summary{color:#f5f5f7}
+details[open] summary::after{content:"💌"; transform:rotate(-8deg) scale(1.1)}
+details .inner{padding:0 24px 26px; font-size:clamp(16px,3.2vw,18px); line-height:1.65; animation:openIn .45s var(--ease) both}
+@keyframes openIn{from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)}}
+
+
+/* ── RITMO / FOTOS SANGRANDO ────── */
+figure{margin-inline:calc(var(--pad) * -1)}
+figure img{border-radius:0; outline:none}
+figcaption{padding-inline:var(--pad)}
+@media (min-width:640px){
+  figure{margin-inline:0}
+  figure img{border-radius:22px; outline:1px solid rgba(0,0,0,.08); outline-offset:-1px}
+}
+.duo{margin-inline:0}
+.duo figure{margin-inline:0}
+.duo figure img{border-radius:16px; outline:1px solid rgba(0,0,0,.08); outline-offset:-1px}
+
+/* seção só de foto: respiro menor em cima, normal embaixo */
+section.foto{padding-top:clamp(28px,5vw,44px); padding-bottom:clamp(28px,5vw,44px)}
+
+/* dark encostando em claro ganha uma borda de transição */
+.dark + section:not(.dark){border-top:1px solid rgba(0,0,0,.06)}
+.card{border:1px solid rgba(0,0,0,.05)}
+.dark .rule{background:#3a3a3c}
+
+/* ── REVEAL NO SCROLL ───────────── */
+.rv{opacity:0; transform:translateY(26px); transition:opacity .65s var(--ease), transform .65s var(--ease)}
+.rv.in{opacity:1; transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:opacity .15s !important}
+  .rv{opacity:1 !important; transform:none !important}
+  .shine{-webkit-text-fill-color:#f5f5f7; color:#f5f5f7; background:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="eyebrow">Edição Especial</div>
+  <h1 class="shine">1 ano</h1>
+  <div class="heart">❤️</div>
+  <div class="rule"></div>
+  <div class="dates tnum">10.08.2025 &nbsp;→&nbsp; 10.08.2026</div>
+  <p class="sub">a edição que eu passei 365 dias<br>morrendo de vontade de escrever</p>
+  <div class="emojis"><span class="float">🎸</span><span class="float b">🕒</span><span class="float">💍</span></div>
+  <div class="scrollhint">role ↓</div>
+</header>
+
+<!-- ═══ ABERTURA ═══ -->
+<section class="rv">
+  <p>oiiii <strong>meu amor</strong> 👋</p>
+  <p>bem-vinda à <strong>Edição Especial de 1 Ano</strong>, a primeira da história dessa newsletter em que eu escrevo "faz um ano" e não tô mentindo, nem arredondando, nem me adiantando pro futuro igual eu sempre faço.</p>
+  <p class="muted">então já sabe como funciona: larga o que você tá fazendo, arruma um cantinho, arruma alguma coisa pra comer (e antes que você fale, sim, eu sei que você cozinha melhor do que qualquer coisa que eu ia sugerir aqui 🍳), e se prepara.</p>
+  <h2 style="margin:34px 0 0">Um ano, amor.<br>UM ANO. 🤯</h2>
+</section>
+
+<!-- ═══ CONTADOR ═══ -->
+<section class="dark counter rv">
+  <div class="eyebrow" style="color:#86868b">⏱️ &nbsp;a gente tá junto há</div>
+  <div class="big shine" id="cH">8.760</div>
+  <div class="unit">horas</div>
+  <div class="rule"></div>
+  <div class="grid3">
+    <div><div class="n" id="cD">365</div><div class="l">dias</div></div>
+    <div><div class="n" id="cM">00</div><div class="l">minutos</div></div>
+    <div><div class="n" id="cS">00</div><div class="l">segundos</div></div>
+  </div>
+  <p class="muted" style="font-size:15px; margin-top:28px">e continua subindo enquanto você lê isso.<br>desde 10 de agosto de 2025 🤍</p>
+</section>
+
+<!-- ═══ TRILHA ═══ -->
+<section class="dark rv" style="text-align:center">
+  <div style="font-size:34px" class="float">🎧</div>
+  <div class="eyebrow" style="color:#86868b; margin-top:16px">Trilha oficial</div>
+  <h2 class="shine" style="margin:10px 0 4px">Maré</h2>
+  <div style="font-size:13px; letter-spacing:2.5px; color:#86868b; text-transform:uppercase; font-weight:600">Jorge Vercillo</div>
+  <div class="rule"></div>
+  <p class="muted" style="margin-bottom:26px">aperta o play antes de continuar.<br>eu escrevi tudo isso aqui ouvindo ela.</p>
+  <a class="btn" href="https://open.spotify.com/search/Mar%C3%A9%20Jorge%20Vercillo" target="_blank" rel="noopener">▶&nbsp;&nbsp;Tocar agora</a>
+  <div><a class="btn ghost" href="https://www.youtube.com/results?search_query=Mar%C3%A9+Jorge+Vercillo" target="_blank" rel="noopener">ou no YouTube, tanto faz</a></div>
+</section>
+
+<!-- ═══ CHARADAS ═══ -->
+<section class="rv">
+  <div class="eyebrow">🧠 &nbsp;Charadas do amor</div>
+  <p>— o que é, o que é: nasceu de madrugada e nunca mais foi dormir? 🌙</p>
+  <p>— o que é, o que é: tem 70 quilômetros no meio e mesmo assim tá sempre colado? 📍</p>
+  <p>— o que é, o que é: já quebrou uma vez e voltou mais forte do que era antes? 🔧</p>
+  <p class="muted">(dica: as três têm a mesma resposta, ela tem duas palavras, e você e eu somos as duas kkkkkk)</p>
+</section>
+
+<!-- ═══ CAP 1 ═══ -->
+<section class="rv">
+  <div class="eyebrow">⛪ &nbsp;Capítulo Um</div>
+  <h2>A igreja, e o tempo que ainda não era nosso</h2>
+  <p>a gente se conheceu na igreja, você com 12 anos, eu com cinco a mais. o que na prática significava que eu não podia fazer absolutamente nada além de existir no mesmo prédio que você kkkkkk</p>
+  <p>e é louco pensar nisso hoje. <strong>tava tudo já escrito, só que ninguém tinha soltado o roteiro pra gente.</strong> a gente passou anos se cruzando ali, se falando normal, sem desconfiar de nada.</p>
+  <p class="muted">hoje eu entendo. não é que não ia rolar. é que ainda não era a hora. e todo aquele tempo que eu passei achando que eu tava atrasado na vida, eu na verdade tava só esperando você ficar pronta pra chegar.</p>
+</section>
+
+<!-- ═══ CAP 2 ═══ -->
+<section class="soft rv">
+  <div class="eyebrow tnum">📸 &nbsp;Capítulo Dois &nbsp;·&nbsp; 27.05.2025</div>
+  <h2>O dia em que eu vi suas fotos e acabou</h2>
+  <p>27 de maio de 2025. eu vi suas fotos.</p>
+  <p>e cara, eu queria muito ter uma explicação mais bonita que essa. alguma coisa mais digna, mais profunda, mais de "futuro marido". mas a verdade é vergonhosamente simples: <strong>eu olhei e não deu. simplesmente não deu.</strong> você é linda demais e eu sou um homem fraco 😵‍💫</p>
+  <p>aí a gente começou a conversar. e conversou. e conversou. <strong>todo santo dia.</strong> e olha, um ano depois eu fui atrás e não achei UM dia sequer que a gente tenha ficado sem se falar. nenhum. isso não é jeito de falar não, amor, isso é estatística 📊</p>
+  <p>e foi aí que apareceu o problema de verdade: <strong>a gente ri das mesmas coisas.</strong> aquele nosso humor de doido, as piadas que se eu contar pra outra pessoa ninguém entende e ainda me olha torto. eu não me apaixonei só por você não. eu me apaixonei por ter alguém que acha graça do mesmo absurdo que eu.</p>
+  <p class="muted">e quando eu descobri que você é inteligente, que toca violão, que toca guitarra, e que <em>nunca</em> largou a bateria 🥁 — aí eu entendi que o negócio era muito mais sério do que eu tava tratando. não era uma menina bonita. era <strong>uma garota incrível</strong>, e eu tinha acabado de me meter numa fila que eu não sabia se eu ia aguentar.</p>
+</section>
+
+<!-- ═══ CAP 3 — 3H ═══ -->
+<section class="dark rv">
+  <div style="text-align:center; font-size:38px" class="float">🕒</div>
+  <div class="eyebrow tnum" style="color:#7e92b8; text-align:center; margin-top:18px">Capítulo Três &nbsp;·&nbsp; 23.07.2025</div>
+  <h2 class="shine" style="text-align:center; margin-top:12px">As três da manhã</h2>
+  <div class="rule"></div>
+  <p class="muted">amor, se um dia me perguntarem qual foi o exato momento em que eu soube que era você, eu não vou falar de beijo, nem de foto, nem de show.</p>
+  <p class="muted">eu vou falar daquele seu e-mail de quase três da manhã, dizendo que antes de você conseguir falar "a palavra", tinha uma coisa que você precisava fazer primeiro.</p>
+  <blockquote>
+    "eu orei tanto por alguém como você, mesmo sem saber que era você."
+    <div class="who">você &nbsp;·&nbsp; 23.07.2025 &nbsp;·&nbsp; 02:44</div>
+  </blockquote>
+  <p class="muted">e aí você me pediu cinco dias. cinco madrugadas, no mesmo horário, aquele horário maluco que pra gente sempre pareceu o fim do dia e não o começo. só orar e depois te avisar que orou. 🙏</p>
+  <p class="muted">Danyelle, eu tinha passado a vida inteira esperando alguém, e nenhuma menina nunca tinha me pedido nada nem parecido com aquilo. você podia ter pedido presente, tempo, declaração, prova. <strong>você pediu oração.</strong></p>
+  <p class="muted">eu fiquei muito, mas <em>muuuuito</em> feliz naquele dia, e eu acho que eu nunca consegui te explicar direito o porquê. então vai agora: não foi a oração em si. foi eu perceber que você não tava me testando, você tava <strong>levando a gente pra Deus antes de levar pra qualquer outro lugar.</strong> mulher nenhuma tinha feito isso comigo.</p>
+  <p class="muted">um ano depois eu tenho a resposta daquelas cinco madrugadas, amor. <strong>era sim. era você. sempre foi.</strong> ✨</p>
+</section>
+
+<!-- ═══ FOTO ═══ -->
+<section class="rv foto">
+  <figure><img src="fotos/nos.jpg" alt="Nós dois" loading="lazy"><figcaption>a gente 🤍</figcaption></figure>
+</section>
+
+<!-- ═══ CAP 4 ═══ -->
+<section class="rv foto">
+  <div class="eyebrow">😰 &nbsp;Capítulo Quatro</div>
+  <h2>A coisa mais difícil que eu já fiz</h2>
+  <p>pedir sua bênção pro seu pai e pra sua mãe.</p>
+  <p>mano, eu já entreguei projeto em cima da hora, eu já tive semana horrorosa, eu já passei noite sem dormir por causa de problema. <strong>nada</strong> chegou nem perto daquilo. eu ensaiei o que eu ia falar, eu travei na hora, eu esqueci metade.</p>
+  <p>mas eu fui, e eu fui porque uma coisa já tava decidida dentro de mim: <strong>eu enfrento o que for por você.</strong> e affs, de lá pra cá teve bastante coisa pra enfrentar, e eu não recuei uma vez sequer.</p>
+  <p>e no fim de tudo o seu pai olhou pra mim e falou que você é uma <strong>princesa</strong> 👑</p>
+  <p class="muted">eu peguei aquilo e transformei em ordem de serviço, amor. é pra vida toda, e eu tô cumprindo.</p>
+</section>
+
+<!-- ═══ CAP 5 ═══ -->
+<section class="soft rv" style="text-align:center">
+  <div style="font-size:36px" class="float">💐</div>
+  <div class="eyebrow" style="margin-top:18px">Capítulo Cinco</div>
+  <h2 class="shine tnum" style="font-size:clamp(44px,11vw,72px); margin:12px 0 4px">10.08.25</h2>
+  <div style="font-size:12px; letter-spacing:3px; color:var(--ink-3); text-transform:uppercase; font-weight:600">o dia em que virou oficial</div>
+  <div class="rule"></div>
+  <div style="text-align:left">
+    <p>lembra que quando a gente tinha um mês eu ainda tava em choque de poder falar "minha namorada" em voz alta? que eu falava que ia usar a palavra <em>amor</em> até gastar?</p>
+    <p>então. <strong>um ano usando todo dia e não gastou.</strong> parece que essa aí não tem limite mesmo, e olha que eu testei bastante.</p>
+    <p class="muted">a parte engraçada é que naquele dia eu achava que aquilo era o ápice. era o topo. não tinha como melhorar. amor, aquele dia foi o <strong>pior</strong> dia do nosso relacionamento, porque todos os outros 364 vieram melhores kkkkkk 📈</p>
+  </div>
+</section>
+
+<!-- ═══ CAP 6 ═══ -->
+<section class="rv">
+  <div class="eyebrow">💔 &nbsp;Capítulo Seis</div>
+  <h2>A parte que eu não vou fingir que não teve</h2>
+  <p>foi um ano de alto e baixo, amor. a gente terminou. a gente voltou.</p>
+  <p>e eu podia escrever isso tudo fingindo que foi lindo do começo ao fim, mas aí não ia ser eu, não ia ser você, e principalmente não ia ser a gente. <strong>a gente se irrita o tempo todo.</strong> a gente discute por bobagem. somos dois teimosos com opinião forte e 70 km no meio pra piorar tudo.</p>
+  <p>só que teve uma coisa que ficou escancarada nesse ano: <strong>toda vez o amor gritou mais alto.</strong> toda vez. a gente tenta ficar longe e simplesmente não consegue, é quase um defeito de fábrica nosso.</p>
+  <p>e é exatamente por isso que eu não tenho medo nenhum do ano 2. namoro que nunca apanhou é bonito, mas ninguém sabe quanto ele aguenta. <strong>o nosso já apanhou, já foi remendado, e continuou de pé.</strong> eu prefiro mil vezes o nosso 💪</p>
+  <p class="muted">e você tinha razão sobre a gente ser um filme, viu. só que eu revi o roteiro e cheguei numa conclusão: você não é a mocinha da comédia romântica não, amor. você é a comédia E a romântica. eu tô no elenco de apoio e tô muito bem servido assim kkkkk 🎬</p>
+</section>
+
+<!-- ═══ CAP 7 — PROVAS ═══ -->
+<section class="rv">
+  <div class="eyebrow">🎟️ &nbsp;Capítulo Sete</div>
+  <h2>As provas de que esse ano aconteceu mesmo</h2>
+
+  <div class="card"><div class="ico float">🎤</div><div><div class="t">Jonas Brothers</div><div class="d">a gente foi. existe foto, existe testemunha. e sinceramente? você cantando do meu lado tava melhor que o que tava rolando no palco, e eu pagaria ingresso de novo só pela sua parte.</div></div></div>
+
+  <div class="card"><div class="ico float b">🏆</div><div><div class="t">A final da Kings League</div><div class="d">namorar uma menina que topa ir na final comigo é um privilégio que eu não tô levando na esportiva não. tô levando muito, MUITO a sério.</div></div></div>
+
+  <div class="card"><div class="ico float">⚽</div><div><div class="t">Nossa primeira Copa do Mundo</div><div class="d">a PRIMEIRA, amor. e agora tem uma coisa nova na minha vida: eu não consigo mais imaginar assistir Copa sem você do meu lado. de quatro em quatro anos, pelo resto da vida, já tá reservado. 🇧🇷</div></div></div>
+
+  <div class="card"><div class="ico float b">🎄</div><div><div class="t">Natal com a sua família, virada de ano com a minha</div><div class="d">e para pra pensar no tamanho disso, amor: a gente fechou o ano inteiro passando pelas duas casas. o Natal com os seus, e a virada viajando com os meus. não foi visita, não foi passeio — foi <strong style="color:var(--ink)">eu dentro da sua família e você dentro da minha</strong>, no mesmo fim de ano. foi incrível, e ali a ficha caiu de vez: <em>é assim que vai ser daqui pra frente.</em> 🎆</div></div></div>
+
+  <div class="card open"><div class="ico heart" style="font-size:28px">🎫</div><div><div class="t">Jorge Vercillo — <span class="muted" style="font-weight:500">em aberto</span></div><div class="d">esse é o único item dessa página inteira sem data. e eu tô deixando por escrito, num lugar que você vai guardar, pra não ter como eu fugir depois. <strong style="color:var(--ink)">é promessa.</strong></div></div></div>
+
+  <div class="duo trio" style="margin-top:26px">
+    <figure><img src="fotos/jb.jpg" alt="Show dos Jonas Brothers" loading="lazy"><figcaption>Jonas Brothers 🎤</figcaption></figure>
+    <figure><img src="fotos/kings.jpg" alt="Final da Kings League" loading="lazy"><figcaption>a final da Kings League 🏆</figcaption></figure>
+    <figure><img src="fotos/copa.jpg" alt="Copa do Mundo" loading="lazy"><figcaption>nossa primeira Copa 🇧🇷</figcaption></figure>
+  </div>
+</section>
+
+<!-- ═══ LISTA ═══ -->
+<section class="soft rv">
+  <div class="eyebrow">📋 &nbsp;Tradição da casa</div>
+  <h2>A Lista Oficial do 1 Ano</h2>
+  <p class="muted" style="margin-bottom:34px">nas edições antigas eu conseguia listar umas 3 coisas. agora eu tenho um ano de convivência, então a lista cresceu e ainda ficou faltando espaço.</p>
+  <ul class="list">
+    <li><span class="num">01 &nbsp;💎</span><strong>Sua persistência.</strong> essa é a primeira e não tem discussão. você insistiu na gente quando desistir era muito mais fácil e muito mais confortável. você insiste em falar comigo todo dia, inclusive nos dias em que eu tô insuportável, inclusive depois de a gente ter brigado. amor, qualquer um ama na parte boa. <span class="muted">você escolheu ficar na parte ruim, e isso é a coisa mais bonita que já fizeram por mim.</span></li>
+    <li><span class="num">02 &nbsp;😂</span><strong>Você faz piada o tempo todo.</strong> o TEMPO todo. <span class="muted">não existe assunto sério o bastante pra te segurar por mais de dois minutos, e graças a Deus por isso. você pegou a minha vida, que era razoavelmente organizada e chata, e transformou num programa de humor sem hora pra acabar.</span></li>
+    <li><span class="num">03 &nbsp;🧭</span><strong>Você me guia.</strong> essa aqui eu demorei pra sacar, e hoje eu acho que é a mais importante de todas. <span class="muted">você me puxa pro lado certo sem nem parecer que tá fazendo isso, sem sermão, sem cobrança. você me faz ser um cara melhor sem nunca ter me pedido pra mudar, e isso é raro pra caramba.</span></li>
+    <li><span class="num">04 &nbsp;🎸</span><strong>Você toca muito bem.</strong> <span class="muted">três instrumentos e você não largou nenhum. e o pior de tudo é que você acha que isso não é grande coisa, o que só me deixa mais impressionado e um pouco irritado kkkkkk</span></li>
+    <li><span class="num">05 &nbsp;🍳</span><strong>Você cozinha bem.</strong> <span class="muted">eu sei que você vai rir dessa aqui ter entrado na lista romântica, mas eu tô falando muito sério. isso é cuidado que dá pra comer, e eu sou um homem faminto e emocionalmente carente, então pra mim conta dobrado.</span></li>
+    <li><span class="num">06 &nbsp;🔊</span><strong>Sua risada.</strong> <span class="muted">continua sendo o melhor barulho que existe. um ano inteiro de amostragem e nada subiu no ranking, nem chegou perto.</span></li>
+    <li style="margin-bottom:0"><span class="num">07 &nbsp;🦋</span><strong>Você é você, o tempo inteiro.</strong> <span class="muted">você não faz versão editada pra ninguém. solta a frase aleatória, canta na frente de estranho, fala o que veio na cabeça. e num mundo onde todo mundo tá se controlando o tempo todo, ficar do lado de alguém que simplesmente <em>é</em> descansa a minha cabeça. nunca conserta isso, por favor.</span></li>
+  </ul>
+</section>
+
+<!-- ═══ CARTAS ═══ -->
+<section class="rv">
+  <div class="eyebrow">💌 &nbsp;Abre só quando precisar</div>
+  <h2>Cartas lacradas</h2>
+  <p class="muted" style="margin-bottom:30px">deixei três aqui. elas não vão a lugar nenhum, então guarda esse link. abre no dia certo.</p>
+
+  <details>
+    <summary>abre quando você estiver com saudade</summary>
+    <div class="inner">
+      <p>amor, se você abriu essa, então os 70 km tão pesando hoje.</p>
+      <p>então deixa eu te lembrar de uma coisa: em 365 dias a gente não passou <em>um único dia</em> sem se falar. nenhum. isso não é sorte, isso é escolha, e a gente fez essa escolha todo santo dia sem nem perceber.</p>
+      <p>a distância nunca ganhou de nós dois. hoje também não vai. me liga. 🤍</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>abre quando a gente estiver brigado</summary>
+    <div class="inner">
+      <p>ok, então provavelmente eu fiz merda. ou você fez. ou os dois, o que é mais provável.</p>
+      <p>eu escrevi isso num dia calmo justamente pra você ler num dia que não tá. então presta atenção no que o eu-tranquilo tem pra falar: <strong>eu não vou embora.</strong> a gente já terminou uma vez e voltou mais forte, e desde então eu aprendi que o nosso problema nunca foi grande o suficiente pra ganhar da gente.</p>
+      <p>eu ainda tô aqui. sempre tô. e eu te amo mesmo irritado. 🤍</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>abre num dia ruim</summary>
+    <div class="inner">
+      <p>você me falou uma vez que sempre que eu tivesse um dia difícil ia ter uma diva doidinha aqui pra falar besteira até eu rir.</p>
+      <p>hoje é o contrário, então senta aí que agora é a minha vez.</p>
+      <p>você é <strong>animada</strong>, você é a <strong>melhor do mundo</strong>, e você é o <strong>orgulho da minha vida</strong> — e isso continua verdade exatamente igual num dia em que você não tá conseguindo levantar da cama. seu valor não caiu hoje, amor. nem um pouquinho.</p>
+      <p>e se não der pra fazer nada hoje, tudo bem. a gente ora. 🙏</p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══ BÔNUS ═══ -->
+<section class="soft rv">
+  <div class="eyebrow"><span class="heart" style="font-size:15px">✨</span> &nbsp;Bônus tiiiimeee</div>
+  <p>nas edições passadas o bônus foi pra sua testinha, e eu mantenho tudo o que eu falei sobre ela. mas o bônus dessa aqui vai pras <strong>suas mãos</strong> 🤲</p>
+  <p class="muted">porque num ano só essas mãos tocaram violão pra mim, seguraram baqueta, cozinharam, escreveram e-mail de madrugada, ficaram juntinhas às três da manhã orando por nós dois, e mesmo com essa agenda toda ainda sobrou espaço nelas pra segurar a minha.</p>
+  <p>são mãos ocupadíssimas, amor. e mesmo assim ainda tem um dedo ali sobrando pra uma coisinha. <strong>só tô comentando</strong> <span class="heart" style="font-size:19px">💍</span></p>
+</section>
+
+<!-- ═══ ACRÓSTICO ═══ -->
+<section class="rv">
+  <div style="text-align:center">
+    <div class="eyebrow">🔥 &nbsp;Ele voltouuuuu</div>
+    <p class="muted" style="margin-bottom:30px">eu ia fazer com o seu nome, mas o Y me derrotou.<br>então vai com a palavra que eu mais falo no dia:</p>
+  </div>
+  <div class="acro">
+    <div class="letra">A</div><div class="txt">nimada</div>
+    <div class="letra">M</div><div class="txt">elhor do mundo</div>
+    <div class="letra">O</div><div class="txt">rgulho da minha vida</div>
+    <div class="letra">R</div><div class="txt" style="padding-bottom:0">oraima te perde por você ser de SP! kkkkk</div>
+  </div>
+</section>
+
+<!-- ═══ REPÓRTER ═══ -->
+<section class="dark rv">
+  <div style="text-align:center">
+    <div class="eyebrow" style="color:#86868b"><span class="heart" style="font-size:12px">🔴</span> &nbsp;Ao vivo</div>
+    <h3 class="shine" style="margin:12px 0 6px">André Repórter</h3>
+    <p class="muted" style="font-size:15px; margin-bottom:30px">senta aí que o programa vai começar, roda a vinheta 🎙️</p>
+  </div>
+  <p class="muted"><strong>Repórter</strong> — boa noite! estamos ao vivo com ele de novo, um ano depois da última entrevista. André, como é chegar no primeiro aniversário?</p>
+  <p><strong>Eu</strong> — olha, tô realizado. mas eu vou ser bem sincero com você: eu prometi na entrevista passada que noivado não tava tão longe. continuo devendo. mas agora o pai dela já me conhece, então eu diria que a situação tá bem encaminhada.</p>
+  <p class="muted"><strong>Repórter</strong> — mas teve término no meio do ano. como o senhor responde a isso?</p>
+  <p><strong>Eu</strong> — teve, e eu não vou fugir da pergunta não. só que a gente voltou, e voltou melhor. namoro que nunca apanhou não sabe quanto aguenta. o meu já sabe, e isso me deixa mais tranquilo do que se nunca tivesse acontecido nada.</p>
+  <p class="muted"><strong>Repórter</strong> — a pergunta que não quer calar: depois de 365 dias, ela continua sendo a certa?</p>
+  <p><strong>Eu</strong> — repórter, no primeiro dia eu <em>achava</em>. hoje eu <em>sei</em>. e tem diferença, viu. achar é sentimento. saber é um ano de dado coletado, testado e conferido.</p>
+  <p class="muted"><strong>Repórter</strong> — é isso, Brasil. encerramos com o homem que venceu no amor e que, pelo visto, vai ter que passar numa joalheria em breve 💍</p>
+</section>
+
+<!-- ═══ FOTO METRÔ ═══ -->
+<section class="rv foto">
+  <figure><img src="fotos/metro.jpg" alt="No metrô" loading="lazy"><figcaption>a caminho, fazendo careta no metrô 🚇</figcaption></figure>
+</section>
+
+<!-- ═══ PROMESSAS ═══ -->
+<section class="rv">
+  <div class="eyebrow">🔮 &nbsp;O que vem agora</div>
+  <h2>As promessas do Ano 2</h2>
+  <div class="card"><div class="ico">☀️</div><div class="d">continuar mandando <strong style="color:var(--ink)">BOOOM DIAAA AMORR</strong>, porque dia que começa sem isso não conta como dia.</div></div>
+  <div class="card"><div class="ico">😂</div><div class="d">te fazer rir todo dia. eu prometi isso quando a gente tinha uma semana e eu não vou aposentar essa promessa nunca.</div></div>
+  <div class="card"><div class="ico">🙏</div><div class="d">orar com você. não só de madrugada em situação de emergência. <strong style="color:var(--ink)">sempre.</strong></div></div>
+  <div class="card"><div class="ico">🎶</div><div class="d">tocar e cantar com você muito, mas muito mais do que a gente tocou nesse primeiro ano.</div></div>
+  <div class="card"><div class="ico">👑</div><div class="d">te tratar como <strong style="color:var(--ink)">princesa</strong>, igual seu pai falou. todo dia, inclusive nos dias em que a gente tá se estranhando.</div></div>
+  <div class="card"><div class="ico">📍</div><div class="d">encurtar esses 70 km. de um jeito ou de outro, mas encurtar.</div></div>
+  <div class="card"><div class="ico">🎫</div><div class="d"><strong style="color:var(--ink)">te levar no show do Jorge Vercillo.</strong> tá escrito, tá com data de hoje, e agora é dívida documentada.</div></div>
+  <div class="card" style="margin-bottom:0"><div class="ico heart" style="font-size:28px">💍</div><div class="d">e aquela outra coisa ali de cima. calma. uma promessa de cada vez. mas anota que eu falei.</div></div>
+</section>
+
+<!-- ═══ FECHO ═══ -->
+<section class="dark rv">
+  <p class="muted">enfim. chegamos no fim da Edição Especial de 1 Ano.</p>
+  <p class="muted">eu sei que ficou gigante de novo, mas é que dessa vez eu tinha um ano inteiro pra tentar caber numa página só, e sinceramente não coube. faltou coisa. sempre falta.</p>
+  <p class="muted">um ano atrás eu era um cara que tinha visto suas fotos num 27 de maio e não tinha conseguido segurar. hoje eu sou um cara que conhece sua família, que já te ouviu cantar de pertinho, que já te viu com raiva de mim e ficou mesmo assim, que já orou de madrugada por nós dois, e que já sabe de cor como você fica quando tá quieta só me olhando.</p>
+  <p class="muted">a gente não fez um ano perfeito, amor. a gente fez um ano <strong>de verdade</strong>. e eu escolheria ele de novo inteirinho, com os baixos junto, sem tirar nada.</p>
+  <p class="muted">que venha a edição de 2 anos. e a de 5. e a de 10. e a de 50, quando a gente já tiver perdido a conta e eu tiver que escrever com a letra gigante porque nenhum dos dois vai estar enxergando mais nada kkkkkk 👵🧓</p>
+
+  <div style="text-align:center; padding:26px 0 6px">
+    <h2 class="shine" style="font-size:clamp(34px,8vw,52px); margin-bottom:0">TE AMO<br>PRA CACETE</h2>
+    <div class="heart" style="font-size:30px; margin-top:18px">❤️</div>
+    <p class="muted" style="font-size:14px; margin-top:14px">(um ano depois e a frase só ficou mais literal)</p>
+  </div>
+
+  <div style="border-top:1px solid #1c1c1e; margin:34px 0 24px"></div>
+  <p class="muted" style="margin-bottom:0">Atenciosamente,<br><strong style="font-size:22px; letter-spacing:-.02em">Seu futuro marido</strong><br><span style="font-size:14px; color:#6e6e73">(versão 1 ano oficializada, e cada vez menos "futuro")</span></p>
+</section>
+
+<!-- ═══ P.S. ═══ -->
+<section class="soft rv">
+  <p class="muted"><strong style="color:var(--ink)">P.S.</strong> — você não é Copa do Mundo, mas eu esperaria quatro anos por você. e olha que eu esperei bem mais que isso, então considera pago ⚽</p>
+  <p class="muted"><strong style="color:var(--ink)">P.S.2</strong> — você não é Jorge Vercillo, mas eu pagaria ingresso só pra te ouvir cantar 🎤</p>
+  <p class="muted" style="margin-bottom:0"><strong style="color:var(--ink)">P.S.3</strong> — uma vez você me falou que quando eu tivesse dia ruim ia ter uma doidinha aqui pra falar besteira até eu rir. cumpriu. um ano inteirinho. <strong style="color:var(--ink)">obrigado, mô.</strong> 🫶</p>
+</section>
+
+<footer style="text-align:center; padding:30px var(--pad) calc(env(safe-area-inset-bottom) + 40px); font-size:12px; color:#a1a1a6; background:var(--paper)">
+  Edição Especial de 1 Ano &nbsp;·&nbsp; 10.08.2026 &nbsp;·&nbsp; escrito por um nerd bom 🤓
+</footer>
+
+</div>
+
+<script>
+// contador ao vivo
+(function(){
+  var inicio = new Date(2025, 7, 10, 0, 0, 0);
+  var H=document.getElementById('cH'), D=document.getElementById('cD'),
+      M=document.getElementById('cM'), S=document.getElementById('cS');
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+  function tick(){
+    var seg = Math.max(0, Math.floor((Date.now()-inicio)/1000));
+    H.textContent = Math.floor(seg/3600).toLocaleString('pt-BR');
+    D.textContent = Math.floor(seg/86400).toLocaleString('pt-BR');
+    M.textContent = pad(Math.floor(seg/60)%60);
+    S.textContent = pad(seg%60);
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+// reveal ao rolar
+(function(){
+  var alvos = document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window) ||
+     window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    alvos.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entradas){
+    entradas.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+  alvos.forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
