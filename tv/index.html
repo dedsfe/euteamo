@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D&A — Temporada 1</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e50914'/><text x='50' y='72' font-size='58' font-family='Georgia,serif' font-weight='700' fill='white' text-anchor='middle'>D</text></svg>">
+<style>
+  :root{
+    --bg:#141414;
+    --ink:#ffffff;
+    --ink-2:#e5e5e5;
+    --gray:#b3b3b3;
+    --gray-2:#8c8c8c;
+    --gray-3:#6d6d6d;
+    --line:rgba(255,255,255,.13);
+    --surface:#181818;
+    --red:#e50914;
+    --radius:6px;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --pad:clamp(20px,4vw,60px);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-feature-settings:"kern" 1,"liga" 1;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+    overflow-x:hidden;
+  }
+  img{display:block;max-width:100%}
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  ::selection{background:var(--red);color:#fff}
+
+  /* ---------- hero netflix ---------- */
+  .hero{
+    position:relative;z-index:2;
+    min-height:100svh;
+    background:var(--bg);
+    display:flex;align-items:flex-end;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  /* ambient glow (cores puxadas da própria capa, tipo YouTube) */
+  .ambient{
+    position:absolute;inset:-14%;z-index:2;
+    filter:blur(120px) saturate(200%);
+    opacity:0;
+    mix-blend-mode:screen;
+    transition:opacity 1.6s var(--ease);
+    pointer-events:none;
+    /* só ilumina as bordas escuras — o miolo da foto fica limpo */
+    -webkit-mask-image:radial-gradient(118% 76% at 56% 32%,transparent 34%,#000 78%);
+    mask-image:radial-gradient(118% 76% at 56% 32%,transparent 34%,#000 78%);
+  }
+  .ambient.on{opacity:.85}
+  .ambient i{
+    position:absolute;display:block;
+    width:54%;aspect-ratio:1;border-radius:50%;
+    will-change:transform;
+  }
+
+  .hero-media{position:absolute;inset:0;z-index:1;overflow:hidden}
+  .hero-media img{
+    width:100%;height:100%;object-fit:cover;object-position:14% 22%;
+    transform:scale(1.06);
+    transform-origin:center 30%;
+  }
+  /* em tela larga dá pra empurrar o casal pra direita, igual netflix */
+  @media(min-width:1000px){
+    .hero-media img{object-position:center 26%;transform:scale(1.2) translateX(9%)}
+  }
+  /* camadas de gradiente — receita netflix */
+  .hero-media::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(0,0,0,.96) 0%,rgba(0,0,0,.88) 22%,rgba(0,0,0,.58) 42%,rgba(0,0,0,.14) 62%,rgba(0,0,0,0) 80%);
+  }
+  .hero-media::after{
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:46%;
+    background:linear-gradient(to top,var(--bg) 0%,rgba(20,20,20,.72) 34%,rgba(20,20,20,0) 100%);
+  }
+  .hero-vignette{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(130% 90% at 50% 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,.55) 100%);
+  }
+
+  .hero-copy{
+    position:relative;z-index:3;
+    width:min(640px,100%);
+    padding:0 var(--pad) clamp(76px,11vh,132px);
+  }
+  .originals{
+    display:flex;align-items:center;gap:9px;margin-bottom:16px;
+  }
+  .originals .n{
+    font-size:26px;font-weight:800;line-height:1;color:#fff;
+    letter-spacing:-.02em;
+  }
+  .originals .n em{font-style:normal;font-weight:300;opacity:.55}
+  .originals .lbl{
+    font-size:12px;font-weight:500;letter-spacing:.38em;text-transform:uppercase;
+    color:rgba(255,255,255,.82);padding-top:2px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(44px,7vw,92px);
+    line-height:.9;
+    letter-spacing:-0.045em;
+    font-weight:700;
+    color:#fff;
+    text-shadow:0 2px 24px rgba(0,0,0,.5);
+  }
+  h1 .thin{font-weight:200;color:rgba(255,255,255,.72);display:block}
+  .meta{
+    display:flex;flex-wrap:wrap;align-items:center;gap:11px;
+    margin:22px 0 0;font-size:14px;color:rgba(255,255,255,.78);font-weight:450;
+  }
+  .meta .match{color:#7bd88f;font-weight:600}
+  .meta .dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.4)}
+  .rating{
+    border:1px solid rgba(255,255,255,.45);border-radius:4px;padding:1px 6px;
+    font-size:11px;font-weight:600;color:rgba(255,255,255,.9)
+  }
+  .hd{
+    border:1px solid rgba(255,255,255,.32);border-radius:3px;padding:0 5px;
+    font-size:10px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.7)
+  }
+  .synopsis{
+    margin:18px 0 0;font-size:17px;line-height:1.5;color:rgba(255,255,255,.86);
+    max-width:50ch;letter-spacing:-0.01em;
+    text-shadow:0 1px 12px rgba(0,0,0,.55);
+  }
+  .synopsis b{color:#fff;font-weight:600}
+  .cta{display:flex;flex-wrap:wrap;gap:11px;margin-top:30px}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    height:48px;padding:0 28px;border-radius:6px;
+    font-size:16px;font-weight:600;letter-spacing:-0.01em;
+    transition:transform .3s var(--ease),background .22s var(--ease),box-shadow .3s var(--ease);
+    will-change:transform;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-play{background:#fff;color:#0a0a0a}
+  .btn-play:hover{background:rgba(255,255,255,.78)}
+  .btn-info{background:rgba(109,109,110,.62);color:#fff;backdrop-filter:blur(4px)}
+  .btn-info:hover{background:rgba(109,109,110,.42)}
+
+  .age-tag{
+    position:absolute;right:0;bottom:clamp(84px,12vh,146px);z-index:3;
+    display:flex;align-items:center;gap:12px;
+    padding:5px 22px 5px 14px;
+    background:rgba(51,51,51,.62);
+    border-left:3px solid rgba(255,255,255,.85);
+    color:#fff;font-size:15px;font-weight:500;
+  }
+
+  @media(max-width:760px){
+    .hero{min-height:88svh}
+    .hero-media img{object-position:16% 18%;transform:scale(1.02)}
+    .age-tag{display:none}
+    .synopsis{font-size:15.5px}
+  }
+
+  /* ---------- rows ---------- */
+  .rows{
+    position:relative;z-index:3;
+    background:var(--bg);
+    margin-top:clamp(22px,2.8vw,46px);
+    padding-bottom:10px;
+    --per:6;
+    --gap:clamp(6px,.45vw,10px);
+  }
+  @media(max-width:1500px){.rows{--per:5}}
+  @media(max-width:1180px){.rows{--per:4}}
+  @media(max-width:820px){.rows{--per:3}}
+  @media(max-width:560px){.rows{--per:2.15}}
+
+  .row{
+    position:relative;margin:0 0 clamp(34px,4vw,58px);
+    /* --cw/--th são recalculados em px pelo JS a partir do card real */
+    --cw:calc((100vw - var(--pad)*2 - var(--gap)*(var(--per) - 1)) / var(--per));
+    --th:calc(var(--cw) * .75);
+  }
+  .row:hover{z-index:40}
+  .row-head{
+    display:flex;align-items:center;gap:10px;
+    padding:0 var(--pad);margin-bottom:2px;
+  }
+  .row-head h2{
+    margin:0;font-size:clamp(15px,1.32vw,24px);font-weight:700;
+    letter-spacing:-0.008em;color:var(--ink-2);
+  }
+  .row-head .count{display:none}
+  .row-head .explore{
+    font-size:clamp(11px,.86vw,13px);color:#54b9c5;font-weight:600;letter-spacing:.01em;
+    opacity:0;transform:translateX(-10px);transition:all .32s var(--ease);
+  }
+  .row:hover .row-head .explore{opacity:1;transform:none}
+  /* indicadores de página, igual netflix */
+  .pager{display:flex;gap:2px;margin-left:auto;opacity:0;transition:opacity .3s var(--ease)}
+  .row:hover .pager{opacity:1}
+  .pager i{width:12px;height:2px;background:rgba(255,255,255,.28)}
+  .pager i.on{background:rgba(255,255,255,.72)}
+
+  .track-wrap{position:relative}
+  .track{
+    display:flex;gap:var(--gap);
+    padding:14px var(--pad) 26px;
+    overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x proximity;
+    scroll-padding-inline:var(--pad);
+    scrollbar-width:none;-ms-overflow-style:none;
+    scroll-behavior:smooth;
+  }
+  .track::-webkit-scrollbar{display:none}
+
+  /* setas netflix: barras coladas na borda, altura do thumb */
+  .arrow{
+    position:absolute;top:14px;z-index:45;
+    height:var(--th);width:calc(var(--pad) - 4px);min-width:34px;
+    background:rgba(0,0,0,.5);
+    display:grid;place-items:center;
+    font-size:clamp(20px,2vw,30px);line-height:1;color:#fff;
+    opacity:0;transition:opacity .25s var(--ease),background .25s var(--ease),font-size .2s var(--ease);
+  }
+  .arrow.l{left:0;border-radius:0 4px 4px 0}
+  .arrow.r{right:0;border-radius:4px 0 0 4px}
+  .row:hover .arrow{opacity:1}
+  .arrow:hover{background:rgba(0,0,0,.78);font-size:clamp(26px,2.6vw,38px)}
+  @media(hover:none){.arrow{display:none}}
+
+  /* ---------- card ---------- */
+  .card{
+    position:relative;flex:0 0 auto;
+    width:calc((100% - var(--gap) * (var(--per) - 1)) / var(--per));
+    scroll-snap-align:start;
+    text-align:left;
+    border-radius:12px;
+    transform-origin:center top;
+    transition:transform .26s var(--ease),box-shadow .26s var(--ease);
+  }
+  .poster{
+    position:relative;overflow:hidden;border-radius:12px;
+    aspect-ratio:4/3;background:#1f1f1f;
+    transition:border-radius .2s var(--ease);
+  }
+  .poster img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .7s var(--ease);
+  }
+  .poster .shade{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.34) 34%,rgba(0,0,0,0) 68%),
+      radial-gradient(90% 60% at 50% 92%,rgba(0,0,0,.5),transparent 70%);
+  }
+
+  /* título como "arte" do card, igual boxart da netflix */
+  .poster .art{
+    position:absolute;left:8%;right:8%;bottom:9%;z-index:2;
+    text-align:center;color:#fff;
+    font-family:"Playfair Display",Georgia,"Times New Roman",serif;
+    font-size:calc(var(--cw) * .072);
+    line-height:1.06;font-weight:700;
+    letter-spacing:.005em;
+    text-shadow:0 2px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.9);
+    text-wrap:balance;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .poster .art .sm{
+    display:block;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+    font-size:calc(var(--cw) * .048);font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(255,255,255,.72);margin-bottom:calc(var(--cw) * .022);
+    text-shadow:0 1px 8px rgba(0,0,0,.9);
+  }
+  .poster.has-bar .art{bottom:13%}
+
+  .poster .num,.poster .emo,.poster .tag,.poster .play,.poster .cap{display:none}
+
+
+  /* barra de progresso netflix (vermelha, dentro do thumb) */
+  .poster .bar{
+    position:absolute;left:9px;right:9px;bottom:6px;z-index:4;
+    height:3px;background:rgba(255,255,255,.3);overflow:hidden;
+  }
+  .poster .bar i{display:block;height:100%;background:var(--red)}
+
+  /* painel que abre no hover */
+  .card-info{
+    height:0;opacity:0;overflow:hidden;
+    background:#181818;border-radius:0 0 12px 12px;
+    transition:height .24s var(--ease),opacity .16s var(--ease);
+  }
+  .card-info .inner{padding:13px 15px 15px}
+  .card-info .ctrls{display:flex;align-items:center;gap:8px}
+  .ic{
+    width:32px;height:32px;border-radius:50%;flex:0 0 auto;
+    border:1.6px solid rgba(255,255,255,.5);
+    display:grid;place-items:center;font-size:12px;color:#fff;
+    transition:border-color .2s,background .2s;
+  }
+  .ic.solid{background:#fff;color:#141414;border-color:#fff;padding-left:2px;font-size:11px}
+  .ic.more{margin-left:auto;border-color:rgba(255,255,255,.3);font-size:14px}
+  .card:hover .ic:hover{border-color:#fff;background:rgba(255,255,255,.16)}
+  .card-info .ctitle{
+    margin-top:12px;font-size:13px;font-weight:600;color:#fff;line-height:1.25;
+    display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .card-info .prog{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .card-info .prog .t{flex:1;height:3px;background:rgba(255,255,255,.28)}
+  .card-info .prog .t i{display:block;height:100%;background:var(--red)}
+  .card-info .prog span{font-size:10.5px;color:var(--gray);white-space:nowrap}
+  .card-info .tags{
+    display:flex;align-items:center;gap:7px;margin-top:9px;
+    font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;
+  }
+  .card-info .tags .d{width:3px;height:3px;border-radius:50%;background:var(--gray-3);flex:0 0 auto}
+  .card-info .tags .match{color:#46d369;font-weight:700}
+
+  @media(hover:hover) and (pointer:fine){
+    .track{
+      padding:14px var(--pad) calc(var(--th) * .16 + 126px);
+      margin-bottom:calc(var(--th) * -.16 - 126px);
+    }
+    .card:hover{
+      transform:translateY(-10px) scale(1.1);z-index:50;
+      box-shadow:0 26px 44px -14px rgba(0,0,0,.75),0 4px 12px rgba(0,0,0,.5);
+      transition-delay:.4s;
+    }
+    .card:hover .poster{border-radius:12px 12px 0 0}
+    .card:hover .poster img{transform:scale(1.05);transition-delay:.4s}
+    .card:hover .card-info{height:112px;opacity:1;transition-delay:.44s}
+    .track > .card:first-child:hover{transform-origin:left top}
+    .track > .card:last-child:hover{transform-origin:right top}
+  }
+
+  /* fileira em destaque: cards um pouco maiores */
+  .row.wide{--per:4}
+  @media(max-width:1180px){.row.wide{--per:3}}
+  @media(max-width:820px){.row.wide{--per:2.2}}
+  @media(max-width:560px){.row.wide{--per:1.5}}
+
+  /* ---------- carta ---------- */
+  .letter-band{
+    position:relative;z-index:1;
+    margin:clamp(26px,3.2vw,48px) var(--pad) 0;
+    border:1px solid var(--line);border-radius:10px;
+    background:
+      radial-gradient(130% 130% at 8% 0%,#2b1416 0%,#1c1416 38%,#161616 100%);
+    padding:clamp(30px,4.6vw,58px);
+    display:grid;grid-template-columns:1fr auto;gap:34px;align-items:center;
+    overflow:hidden;
+  }
+  .letter-band::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red);
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gray);
+    padding:6px 12px;border:1px solid var(--line);border-radius:100px;
+    background:rgba(255,255,255,.05);
+  }
+  .eyebrow b{color:#fff;font-weight:700;letter-spacing:.16em}
+  .letter-band h3{
+    margin:14px 0 0;font-size:clamp(26px,3.6vw,42px);font-weight:700;letter-spacing:-0.035em;line-height:1.05;
+    color:#fff;
+  }
+  .letter-band p{margin:14px 0 0;color:var(--gray);font-size:16px;line-height:1.55;max-width:46ch}
+  .seal{
+    width:clamp(96px,12vw,148px);aspect-ratio:1;border-radius:50%;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);
+    display:grid;place-items:center;
+    font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,3.4vw,40px);
+    font-weight:700;letter-spacing:-.02em;color:#fff;
+    box-shadow:inset 0 2px 30px rgba(0,0,0,.4);
+  }
+  @media(max-width:760px){.letter-band{grid-template-columns:1fr}.seal{justify-self:start}}
+
+  /* ---------- footer ---------- */
+  footer{
+    position:relative;z-index:1;
+    margin-top:clamp(46px,6vw,80px);padding:34px var(--pad) 54px;
+    border-top:1px solid rgba(255,255,255,.09);
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+    color:var(--gray-2);font-size:12.5px;
+  }
+  footer .r{margin-left:auto}
+
+  /* ---------- modal ---------- */
+  .scrim{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    display:grid;place-items:center;padding:clamp(16px,4vw,48px);
+    opacity:0;pointer-events:none;
+  }
+  .scrim.open{pointer-events:auto}
+  .sheet{
+    width:min(760px,100%);max-height:88vh;overflow:auto;
+    background:#181818;border:1px solid rgba(255,255,255,.07);border-radius:8px;
+    box-shadow:0 40px 100px -20px rgba(0,0,0,.9);
+    transform:translateY(18px) scale(.97);opacity:0;
+    scrollbar-width:none;
+  }
+  .sheet::-webkit-scrollbar{display:none}
+  .sheet-hero{position:relative;aspect-ratio:16/9;background:#222;overflow:hidden}
+  .sheet-hero img{width:100%;height:100%;object-fit:cover}
+  .sheet-hero .g{
+    position:absolute;inset:0;z-index:2;
+    background:
+      linear-gradient(to top,#181818 1%,rgba(24,24,24,.55) 34%,rgba(24,24,24,0) 72%),
+      linear-gradient(to right,rgba(24,24,24,.75) 0%,rgba(24,24,24,0) 55%);
+  }
+  .sheet-hero.empty{
+    background:
+      radial-gradient(110% 90% at 80% 6%,var(--g2,#8e2749) 0%,transparent 60%),
+      linear-gradient(145deg,var(--g1,#4a1d33) 0%,#191419 62%,#141414 100%);
+  }
+  .sheet-hero .bigemo{
+    position:absolute;top:-7%;right:-1%;z-index:1;
+    font-size:min(170px,24vw);line-height:1;opacity:.4;transform:rotate(8deg);
+    filter:drop-shadow(0 14px 40px rgba(0,0,0,.6));
+  }
+  .sheet-hero .hero-in{
+    position:absolute;z-index:3;left:clamp(22px,3.4vw,44px);right:clamp(22px,3.4vw,44px);
+    bottom:clamp(18px,2.6vw,30px);
+  }
+  .sheet-hero .acts{display:flex;align-items:center;gap:10px;margin-top:16px}
+  .sheet-hero .acts .btn{height:40px;padding:0 22px;font-size:15px;border-radius:4px}
+  .sheet-hero .acts .ic{width:36px;height:36px;font-size:14px}
+  .sheet-body{padding:clamp(18px,2.4vw,26px) clamp(22px,3.4vw,44px) clamp(26px,3.4vw,40px);position:relative}
+  .sheet-body h4{margin:0;font-size:clamp(24px,3.4vw,38px);font-weight:700;letter-spacing:-0.032em;color:#fff;line-height:1.05;
+    text-shadow:0 2px 20px rgba(0,0,0,.7)}
+  .sheet-meta{display:flex;gap:9px;align-items:center;margin-top:10px;font-size:13px;color:var(--gray-2)}
+  .sheet-body .txt{margin-top:16px;font-size:16px;line-height:1.62;color:var(--gray)}
+  .sheet-body .txt b{color:#fff;font-weight:600}
+  .quote{
+    margin-top:18px;padding:16px 18px;border-left:3px solid var(--red);
+    background:rgba(255,255,255,.05);border-radius:0 6px 6px 0;
+    font-size:15.5px;line-height:1.5;color:var(--ink-2);
+  }
+  .close{
+    position:absolute;top:14px;right:14px;z-index:5;
+    width:34px;height:34px;border-radius:50%;background:#181818;
+    border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;font-size:15px;color:#fff;
+    box-shadow:0 6px 20px -6px rgba(0,0,0,.6);
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="ambient" id="ambient" aria-hidden="true">
+    <i data-blob></i><i data-blob></i><i data-blob></i><i data-blob></i>
+  </div>
+
+  <div class="hero-media" data-hero-media>
+    <img src="fotos/capa.jpg" alt="Danyelle e André" id="coverImg" crossorigin="anonymous">
+  </div>
+  <div class="hero-vignette"></div>
+
+  <div class="hero-copy">
+    <div class="originals" data-rise>
+      <span class="n">D<em>&amp;</em>A</span>
+      <span class="lbl">Série</span>
+    </div>
+    <h1 data-rise><span class="thin">Danyelle</span> &amp; André</h1>
+    <div class="meta" data-rise>
+      <span class="match">100% relevante</span>
+      <span>2026</span><span class="dot"></span>
+      <span class="rating">L</span>
+      <span>1 temporada</span><span class="dot"></span>
+      <span>365 episódios</span>
+      <span class="hd">HD</span>
+    </div>
+    <p class="synopsis" data-rise>
+      Ele a conheceu na igreja, ela tinha 12 anos. Cinco anos de diferença e o tempo todo errado —
+      até <b>27 de maio de 2025</b>. Conversa todo santo dia, uma oração às três da manhã
+      e <b>70 km</b> que nunca foram longe o bastante.
+    </p>
+    <div class="cta" data-rise>
+      <button class="btn btn-play" data-open="ep6">▶&nbsp; Assistir</button>
+      <button class="btn btn-info" data-open="sobre">ⓘ&nbsp; Mais informações</button>
+    </div>
+  </div>
+
+  <div class="age-tag" data-rise>
+    <span class="rating">L</span>
+    <span>livre para todos os públicos apaixonados</span>
+  </div>
+</header>
+
+<main class="rows">
+
+  <!-- FILEIRA 1 -->
+  <section class="row" id="continue">
+    <div class="row-head">
+      <h2>Continuar assistindo</h2>
+      <span class="explore">arrasta pro lado &rarr;</span>
+    </div>
+    <div class="track-wrap">
+      <button class="arrow l" data-scroll="-1">&lsaquo;</button>
+      <button class="arrow r" data-scroll="1">&rsaquo;</button>
+      <div class="track" data-track>
+
+        <button class="card" data-open="ep-jb">
+          <div class="poster">
+            <img src="fotos/jb.jpg" alt="Show dos Jonas Brothers" style="object-position:center 28%">
+            <div class="shade"></div>
+          </div>
+          <div class="card-title">Jonas Brothers</div>
+          <div class="card-sub">o primeiro show dos dois</div>
+          <div class="progress"><i style="width:54%"></i></div>
+        </button>
+
+        <button class="card" data-open="ep-metro">
+          <div class="poster">
+            <img src="fotos/metro.jpg" alt="No metr&ocirc;" style="object-position:center 38%">
+            <div class="shade"></div>
+          </div>
+          <div class="card-title">O caminho at&eacute; voc&ecirc;</div>
+          <div class="card-sub">Praia Grande &middot; 70 km, toda semana</div>
+          <div class="progress"><i style="width:31%"></i></div>
+        </button>
+
+        <button class="card" data-open="ep6">
+          <div class="poster">
+            <img src="fotos/nos.jpg" alt="N&oacute;s" style="object-position:center 26%">
+            <div class="shade"></div>
+          </div>
+          <div class="card-title">Namoro oficial</div>
+          <div class="card-sub">10 ago 2025 &middot; o dia 1</div>
+          <div class="progress"><i style="width:78%"></i></div>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FILEIRA 2 -->
+  <section class="row" id="momentos">
+    <div class="row-head">
+      <h2>Momentos que a gente n&atilde;o esquece</h2>
+      <span class="explore">arrasta pro lado &rarr;</span>
+    </div>
+    <div class="track-wrap">
+      <button class="arrow l" data-scroll="-1">&lsaquo;</button>
+      <button class="arrow r" data-scroll="1">&rsaquo;</button>
+      <div class="track" data-track>
+
+        <button class="card" data-open="ep-kings">
+          <div class="poster">
+            <img src="fotos/kings.jpg" alt="Final da Kings League" style="object-position:center 30%">
+            <div class="shade"></div>
+          </div>
+          <div class="card-title">Final da Kings League</div>
+          <div class="card-sub">gritaria, os dois juntos</div>
+        </button>
+
+        <button class="card" data-open="ep-copa">
+          <div class="poster">
+            <img src="fotos/copa.jpg" alt="Dia de jogo" style="object-position:center 26%">
+            <div class="shade"></div>
+          </div>
+          <div class="card-title">Dia de jogo</div>
+          <div class="card-sub">o com&eacute;dia e a rom&acirc;ntica</div>
+        </button>
+
+        <button class="card" data-open="sobre">
+          <div class="poster">
+            <img src="fotos/capa.jpg" alt="Danyelle e Andr&eacute;" style="object-position:center 24%">
+            <div class="shade"></div>
+          </div>
+          <div class="card-title">Danyelle &amp; Andr&eacute;</div>
+          <div class="card-sub">a s&eacute;rie inteira, do come&ccedil;o</div>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CARTA -->
+  <section class="letter-band" id="carta" data-rise>
+    <div>
+      <span class="eyebrow">Episódio final · <b>escrito à mão</b></span>
+      <h3>A carta.</h3>
+      <p>
+        Esse aqui não tem vídeo. É a letra dele, no papel, do jeito que sai errado mesmo.
+        Um ano cabe em muita coisa — mas essa parte só cabia escrita à mão.
+      </p>
+      <div class="cta">
+        <button class="btn btn-play" data-open="carta">Abrir a carta</button>
+      </div>
+    </div>
+    <div class="seal"><span>D<em>&amp;</em>A</span></div>
+  </section>
+
+</main>
+
+<footer>
+  <span>D&amp;A Originals · Temporada 1</span>
+  <span class="r">Feito à mão por ele · 10.08.2026</span>
+</footer>
+
+<!-- MODAL -->
+<div class="scrim" id="scrim">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true">
+    <button class="close" id="closeBtn" aria-label="Fechar">✕</button>
+    <div class="sheet-hero" id="sheetHero"></div>
+    <div class="sheet-body">
+      <div class="sheet-meta" id="sheetMeta"></div>
+      <div class="txt" id="sheetTxt"></div>
+    </div>
+  </div>
+</div>
+
+<!-- blur direcional (só no eixo Y) — é o que dá cara de motion blur de verdade -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none">
+  <filter id="mblur" x="-6%" y="-24%" width="112%" height="148%" color-interpolation-filters="sRGB">
+    <feGaussianBlur id="mblurStd" in="SourceGraphic" stdDeviation="0 0"/>
+  </filter>
+</svg>
+
+<script src="vendor/motion.dev.js"></script>
+<script>
+const { animate, inView, stagger, scroll } = Motion;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- ambient glow: cores puxadas da própria capa ---------- */
+(function(){
+  const img = document.getElementById("coverImg");
+  const field = document.getElementById("ambient");
+  const blobs = [...field.querySelectorAll("[data-blob]")];
+
+  /* média de uma região do canvas, com boost de saturação */
+  function regionColor(data, w, h, x0, y0, x1, y1){
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let y = y0; y < y1; y++){
+      for (let x = x0; x < x1; x++){
+        const i = (y * w + x) * 4;
+        r += data[i]; g += data[i+1]; b += data[i+2]; n++;
+      }
+    }
+    r /= n; g /= n; b /= n;
+    /* empurra pra longe do cinza — senão foto neutra não gera glow nenhum */
+    const avg = (r + g + b) / 3, boost = 2.1;
+    r = Math.min(255, Math.max(0, avg + (r - avg) * boost));
+    g = Math.min(255, Math.max(0, avg + (g - avg) * boost));
+    b = Math.min(255, Math.max(0, avg + (b - avg) * boost));
+    /* garante brilho suficiente pra aparecer sobre o preto */
+    const lum = Math.max(r, g, b);
+    const lift = lum < 150 ? 150 / Math.max(lum, 28) : 1;
+    return `rgb(${Math.min(255, r*lift)|0},${Math.min(255, g*lift)|0},${Math.min(255, b*lift)|0})`;
+  }
+
+  function paint(){
+    const W = 48, H = 36;
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    let data;
+    try {
+      ctx.drawImage(img, 0, 0, W, H);
+      data = ctx.getImageData(0, 0, W, H).data;
+    } catch (e) { return; }  /* canvas tainted — segue sem glow */
+
+    const zones = [
+      [0, 0, W>>1, H>>1],        // topo-esq
+      [W>>1, 0, W, H>>1],        // topo-dir
+      [0, H>>1, W>>1, H],        // base-esq
+      [W>>1, H>>1, W, H]         // base-dir
+    ];
+    const spots = [
+      { left: "-6%",  top: "-8%"  },
+      { left: "46%",  top: "-4%"  },
+      { left: "-4%",  top: "44%"  },
+      { left: "48%",  top: "46%"  }
+    ];
+
+    blobs.forEach((el, i) => {
+      const col = regionColor(data, W, H, ...zones[i]);
+      el.style.background = `radial-gradient(circle at 50% 50%, ${col} 0%, ${col} 34%, transparent 72%)`;
+      el.style.left = spots[i].left;
+      el.style.top  = spots[i].top;
+      if (!reduce) {
+        animate(el,
+          { x: [0, (i % 2 ? -1 : 1) * 90, 0], y: [0, (i < 2 ? 1 : -1) * 70, 0], scale: [1, 1.18, 1] },
+          { duration: 16 + i * 3, repeat: Infinity, ease: "easeInOut", delay: i * 1.2 });
+      }
+    });
+    field.classList.add("on");
+  }
+
+  if (img.complete && img.naturalWidth) paint();
+  else img.addEventListener("load", paint, { once: true });
+})();
+
+/* ---------- entrada do hero ---------- */
+if (!reduce) {
+  animate(document.querySelectorAll("[data-rise]"),
+    { opacity: [0, 1], y: [26, 0] },
+    { duration: 1, delay: stagger(.09, { startDelay: .15 }), ease: [.22, 1, .36, 1] });
+
+  /* zoom lento de entrada — respeita o enquadramento do CSS em cada largura */
+  const SC = innerWidth >= 1000 ? 1.20 : innerWidth <= 760 ? 1.02 : 1.06;
+  const TX = innerWidth >= 1000 ? "9%" : "0%";
+  animate(document.querySelector("[data-hero-media] img"),
+    { opacity: [0, 1], scale: [SC * 1.09, SC], x: [TX, TX] },
+    { duration: 2.1, ease: [.22, 1, .36, 1] });
+
+  /* parallax + fade do hero no scroll */
+  const media = document.querySelector("[data-hero-media]");
+  const copy  = document.querySelector(".hero-copy");
+  addEventListener("scroll", () => {
+    const y = scrollY;
+    if (y > innerHeight * 1.15) return;
+    media.style.transform = `translateY(${y * .22}px)`;
+    copy.style.transform  = `translateY(${y * .10}px)`;
+    copy.style.opacity    = String(Math.max(0, 1 - y / (innerHeight * .62)));
+  }, { passive: true });
+}
+
+/* ---------- monta os cards no formato netflix ---------- */
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+document.querySelectorAll(".card").forEach(card => {
+  const poster = card.querySelector(".poster");
+  const title  = card.querySelector(".card-title")?.textContent.trim() || "";
+  const sub    = card.querySelector(".card-sub")?.textContent.trim() || "";
+  const prog   = card.querySelector(".progress i");
+  const pct    = prog ? parseInt(prog.style.width) || 0 : null;
+
+  /* progresso vira barra vermelha dentro do thumb */
+  if (pct !== null){
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.innerHTML = `<i style="width:${pct}%"></i>`;
+    poster.appendChild(bar);
+    poster.classList.add("has-bar");
+  }
+
+  /* o título vira a "arte" do card */
+  if (title){
+    const art = document.createElement("div");
+    art.className = "art";
+    art.textContent = title;
+    poster.appendChild(art);
+  }
+
+
+  /* painel que abre no hover */
+  const info = document.createElement("div");
+  info.className = "card-info";
+  info.innerHTML =
+    `<div class="inner">
+       <div class="ctrls">
+         <span class="ic solid">▶</span>
+         <span class="ic">+</span>
+         <span class="ic more">⌄</span>
+       </div>
+       <div class="ctitle">${esc(sub || title)}</div>
+       ${pct !== null
+          ? `<div class="prog"><div class="t"><i style="width:${pct}%"></i></div><span>${pct}% de nós</span></div>`
+          : `<div class="tags"><span class="match">100% relevante</span><i class="d"></i><span>2025</span></div>`}
+     </div>`;
+  card.appendChild(info);
+
+  card.querySelector(".card-title")?.remove();
+  card.querySelector(".card-sub")?.remove();
+  card.querySelector(".progress")?.remove();
+  poster.querySelector(".cap")?.remove();
+  poster.querySelector(".play")?.remove();
+});
+
+/* ---------- fileira com poucos itens estica os cards pra preencher a tela ---------- */
+function fitRows(){
+  document.querySelectorAll(".row").forEach(row => {
+    row.style.removeProperty("--per");
+    const base = parseFloat(getComputedStyle(row).getPropertyValue("--per"));
+    const n = row.querySelectorAll(".card").length;
+    if (n && n < base) row.style.setProperty("--per", n);
+
+    /* tipografia e setas seguem a largura real do card, não o cálculo em vw */
+    const card = row.querySelector(".card");
+    if (card){
+      const w = card.getBoundingClientRect().width;
+      if (w > 0){
+        row.style.setProperty("--cw", w + "px");
+        row.style.setProperty("--th", (w * .75) + "px");
+      }
+    }
+  });
+}
+fitRows();
+addEventListener("resize", fitRows, { passive: true });
+
+/* ---------- indicadores de página nas fileiras ---------- */
+document.querySelectorAll(".row").forEach(row => {
+  const track = row.querySelector("[data-track]");
+  const head  = row.querySelector(".row-head");
+  if (!track || !head) return;
+  const pages = Math.ceil(track.scrollWidth / track.clientWidth);
+  if (pages < 2) return;
+  const pager = document.createElement("div");
+  pager.className = "pager";
+  pager.innerHTML = Array.from({ length: pages }, (_, i) => `<i${i ? "" : ' class="on"'}></i>`).join("");
+  head.appendChild(pager);
+  track.addEventListener("scroll", () => {
+    const p = Math.round(track.scrollLeft / track.clientWidth);
+    pager.querySelectorAll("i").forEach((el, i) => el.classList.toggle("on", i === p));
+  }, { passive: true });
+});
+
+/* ---------- motion blur: o miolo borra na direção do scroll ---------- */
+(function(){
+  if (reduce) return;
+  const alvo = document.querySelector(".rows");
+  const std  = document.getElementById("mblurStd");
+  const heroImg = document.querySelector("[data-hero-media] img");
+
+  let ultimo = scrollY, v = 0, ligado = false, timer = null, tUltimo = 0;
+
+  addEventListener("scroll", () => {
+    const agora = scrollY;
+    /* velocidade do scroll vira quantidade de blur, com teto pra não virar borrão */
+    v = Math.min(Math.abs(agora - ultimo) * .22, 11);
+    ultimo = agora;
+    aplica(v);
+
+    /* o hero desfoca conforme sai de cena */
+    const p = Math.min(agora / (innerHeight * .85), 1);
+    heroImg.style.filter = p > .05 ? `blur(${(p * 6).toFixed(1)}px)` : "";
+
+    clearTimeout(timer);
+    tUltimo = performance.now();
+    timer = setTimeout(esmaece, 90);
+  }, { passive: true });
+
+  function aplica(x){
+    if (x <= .35) return desliga();
+    if (!ligado){ alvo.style.filter = "url(#mblur)"; ligado = true; }
+    std.setAttribute("stdDeviation", "0 " + x.toFixed(2));
+  }
+
+  /* o decaimento roda em timer, não em rAF (em aba de fundo o rAF congela), e é
+     proporcional ao tempo real — se o timer atrasar, o blur some de uma vez em
+     vez de ficar preso na tela */
+  function esmaece(){
+    const agora = performance.now();
+    const dt = Math.max(agora - tUltimo, 1);
+    tUltimo = agora;
+    v *= Math.pow(.55, dt / 45);
+    if (v > .35){ aplica(v); timer = setTimeout(esmaece, 45); }
+    else desliga();
+  }
+
+  function desliga(){
+    v = 0;
+    std.setAttribute("stdDeviation", "0 0");
+    if (ligado){ alvo.style.filter = ""; ligado = false; }
+  }
+
+  /* trocou de aba no meio do scroll: volta limpo */
+  addEventListener("visibilitychange", () => { if (document.hidden){ clearTimeout(timer); desliga(); } });
+})();
+
+/* ---------- rows entram ao aparecer ---------- */
+document.querySelectorAll(".row").forEach(row => {
+  const items = row.querySelectorAll(".card");
+  const head  = row.querySelector(".row-head");
+  if (reduce) return;
+  head.style.opacity = 0;
+  items.forEach(c => { c.style.opacity = 0; });
+  items.forEach(c => { c.style.filter = "blur(16px)"; });
+  head.style.filter = "blur(9px)";
+  inView(row, () => {
+    animate(head, { opacity: [0, 1], y: [14, 0], filter: ["blur(9px)", "blur(0px)"] },
+      { duration: .7, ease: [.22, 1, .36, 1] });
+    animate(items, { opacity: [0, 1], y: [34, 0], filter: ["blur(16px)", "blur(0px)"] },
+      { duration: .95, delay: stagger(.07, { startDelay: .06 }), ease: [.22, 1, .36, 1] });
+    /* limpa os estilos inline: transform venceria o scale do :hover, e filter
+       deixaria uma camada de composição sobrando em cada card */
+    setTimeout(() => {
+      items.forEach(c => { c.style.transform = ""; c.style.filter = ""; });
+      head.style.filter = "";
+    }, 1600);
+  }, { margin: "-12% 0px -12% 0px", amount: .1 });
+});
+
+/* ---------- setas das fileiras ---------- */
+document.querySelectorAll("[data-scroll]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const track = btn.closest(".track-wrap").querySelector("[data-track]");
+    track.scrollBy({ left: Number(btn.dataset.scroll) * track.clientWidth * .8, behavior: "smooth" });
+  });
+});
+
+/* ---------- conteúdo dos episódios ---------- */
+const EPS = {
+  sobre: { title:"Danyelle & André", meta:["1 temporada","365 episódios","L"],
+    html:`<p>Começou na igreja, ela com <b>12 anos</b>. Cinco anos de diferença e o tempo todo errado — até
+    <b>27 de maio de 2025</b>, quando ele viu as fotos dela e não conseguiu mais evitar.</p>
+    <p>Desde então: conversa <b>todo santo dia</b>, sem falhar um. Humor de doido igualzinho. Memes internos
+    que ninguém de fora entende. Uma bênção pedida com medo. Um término, uma volta. E 70 km que
+    nunca foram longe o bastante.</p>`,
+    quote:"você não é academia, mas mexe com todos os meus músculos" },
+
+  ep6: { img:"fotos/nos.jpg", title:"EP 06 — Namoro oficial", meta:["10 ago 2025","Dia 1"],
+    html:`<p>Depois da bênção, o sim. O dia 1 de 365.</p>` },
+
+  "ep-jb": { img:"fotos/jb.jpg", title:"Jonas Brothers", meta:["Show","Os dois juntos"],
+    html:`<p>O primeiro show dos dois. Gritando música que ninguém mais ali sabia que era <i>deles</i>.</p>` },
+
+  "ep-kings": { img:"fotos/kings.jpg", title:"Final da Kings League", meta:["Final","Arquibancada"],
+    html:`<p>Ele o comédia, ela a romântica — ou o contrário, dependendo do dia.</p>`,
+    quote:"você é o comédia, eu a romântica" },
+
+  "ep-copa": { img:"fotos/copa.jpg", title:"Dia de jogo", meta:["Momento","Sem roteiro"],
+    html:`<p>Dos dias que não tinham nada de especial e por isso mesmo ficaram.</p>` },
+
+  "ep-metro": { img:"fotos/metro.jpg", title:"70 km", meta:["Praia Grande ↔ São Paulo","Toda semana"],
+    html:`<p>A distância inteira medida em vagão, plataforma e a hora de voltar.
+    Nunca foi longe o suficiente pra fazer diferença.</p>` },
+
+  carta: { title:"A carta", meta:["Episódio final","Escrita à mão"],
+    html:`<p style="color:var(--gray-3)">📷 <b style="color:var(--gray-2)">Espaço reservado:</b> aqui entra a foto
+    da carta escrita à mão — ou o texto, se a gente for de fonte manuscrita.</p>
+    <p>Um ano de conversa todo dia, de 70 km, de oração às três da manhã.
+    Isso não cabe em card de site. Só cabia escrito à mão.</p>` }
+};
+
+/* ---------- modal ---------- */
+const scrim = document.getElementById("scrim");
+const sheet = document.getElementById("sheet");
+const sHero = document.getElementById("sheetHero");
+const sMeta = document.getElementById("sheetMeta");
+const sTxt  = document.getElementById("sheetTxt");
+let lastFocus = null;
+
+function openSheet(key){
+  const d = EPS[key]; if (!d) return;
+  lastFocus = document.activeElement;
+
+  sHero.className = "sheet-hero" + (d.img ? "" : " empty");
+  if (!d.img){
+    const paleta = [
+      ["#4a1d33","#8e2749"], ["#1e2145","#4b3a86"], ["#3a1418","#8c2230"],
+      ["#173026","#3f6b4f"], ["#3a2410","#8a5320"], ["#2b1440","#6a2f8f"]
+    ];
+    const h = [...key].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const [g1, g2] = paleta[h % paleta.length];
+    sHero.style.setProperty("--g1", g1);
+    sHero.style.setProperty("--g2", g2);
+  }
+  sHero.innerHTML =
+    (d.img ? `<img src="${d.img}" alt="">` : "") +
+    `<div class="g"></div>
+     <div class="hero-in">
+       <h4>${d.title}</h4>
+       <div class="acts">
+         <button class="btn btn-play">▶&nbsp; Assistir</button>
+         <span class="ic">+</span>
+       </div>
+     </div>`;
+  sMeta.innerHTML = d.meta.map(m => `<span>${m}</span>`).join('<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--gray-3)"></span>');
+  sTxt.innerHTML = d.html + (d.quote ? `<div class="quote">“${d.quote}”</div>` : "");
+
+  scrim.classList.add("open");
+  animate(scrim, { opacity: [0, 1] }, { duration: .3 });
+  animate(sheet, { opacity: [0, 1], y: [18, 0], scale: [.97, 1] },
+    { duration: .55, ease: [.22, 1, .36, 1] });
+  document.body.style.overflow = "hidden";
+  document.getElementById("closeBtn").focus();
+}
+
+function closeSheet(){
+  animate(sheet, { opacity: 0, y: 12, scale: .98 }, { duration: .25 });
+  animate(scrim, { opacity: 0 }, { duration: .28 });
+  setTimeout(() => {
+    scrim.classList.remove("open");
+    document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus();
+  }, 290);
+}
+
+document.querySelectorAll("[data-open]").forEach(el =>
+  el.addEventListener("click", () => openSheet(el.dataset.open)));
+document.getElementById("closeBtn").addEventListener("click", closeSheet);
+scrim.addEventListener("click", e => { if (e.target === scrim) closeSheet(); });
+addEventListener("keydown", e => { if (e.key === "Escape" && scrim.classList.contains("open")) closeSheet(); });
+
+</script>
+</body>
+</html>
