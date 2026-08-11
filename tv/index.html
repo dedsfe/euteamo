@@ -73,17 +73,23 @@
     transform-origin:center 30%;
   }
   /* em tela larga dá pra empurrar o casal pra direita, igual netflix */
+  @media(min-width:760px) and (max-width:999px){
+    .hero-media img{object-position:center 18%;transform:scale(1.2) translateX(9%)}
+  }
   @media(min-width:1000px){
-    .hero-media img{object-position:center 26%;transform:scale(1.2) translateX(9%)}
+    /* escala tem que ser maior que o deslocamento, senao aparece borda vazia */
+    .hero-media img{object-position:center 24%;transform:scale(1.34) translateX(14%)}
   }
   /* camadas de gradiente — receita netflix */
   .hero-media::before{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(0,0,0,.96) 0%,rgba(0,0,0,.88) 22%,rgba(0,0,0,.58) 42%,rgba(0,0,0,.14) 62%,rgba(0,0,0,0) 80%);
+    background:linear-gradient(90deg,rgba(20,20,20,.97) 0%,rgba(20,20,20,.93) 28%,rgba(20,20,20,.76) 46%,rgba(20,20,20,.34) 66%,rgba(20,20,20,0) 86%);
   }
   .hero-media::after{
-    content:"";position:absolute;left:0;right:0;bottom:-1px;height:46%;
-    background:linear-gradient(to top,var(--bg) 0%,rgba(20,20,20,.72) 34%,rgba(20,20,20,0) 100%);
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:60%;
+    background:linear-gradient(to top,
+      var(--bg) 0%,var(--bg) 9%,
+      rgba(20,20,20,.86) 26%,rgba(20,20,20,.5) 48%,rgba(20,20,20,.16) 72%,rgba(20,20,20,0) 100%);
   }
   .hero-vignette{
     position:absolute;inset:0;z-index:2;pointer-events:none;
@@ -102,10 +108,11 @@
     font-size:26px;font-weight:800;line-height:1;color:#fff;
     letter-spacing:-.02em;
   }
-  .originals .n em{font-style:normal;font-weight:300;opacity:.55}
+  .originals .n em{font-style:normal;font-weight:500;opacity:.78;padding:0 1px}
   .originals .lbl{
-    font-size:12px;font-weight:500;letter-spacing:.38em;text-transform:uppercase;
-    color:rgba(255,255,255,.82);padding-top:2px;
+    font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(255,255,255,.9);padding-top:3px;
+    text-shadow:0 1px 10px rgba(0,0,0,.6);
   }
   h1{
     margin:0;
@@ -121,15 +128,17 @@
     display:flex;flex-wrap:wrap;align-items:center;gap:11px;
     margin:22px 0 0;font-size:14px;color:rgba(255,255,255,.78);font-weight:450;
   }
-  .meta .match{color:#7bd88f;font-weight:600}
+  .meta .match{color:#46d369;font-weight:600;text-shadow:0 1px 10px rgba(0,0,0,.7)}
   .meta .dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.4)}
   .rating{
-    border:1px solid rgba(255,255,255,.45);border-radius:4px;padding:1px 6px;
-    font-size:11px;font-weight:600;color:rgba(255,255,255,.9)
+    display:inline-flex;align-items:center;height:19px;
+    border:1px solid rgba(255,255,255,.5);border-radius:3px;padding:0 6px;
+    font-size:11.5px;font-weight:600;line-height:1;color:#fff
   }
   .hd{
-    border:1px solid rgba(255,255,255,.32);border-radius:3px;padding:0 5px;
-    font-size:10px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.7)
+    display:inline-flex;align-items:center;height:19px;
+    border:1px solid rgba(255,255,255,.42);border-radius:3px;padding:0 6px;
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.88)
   }
   .synopsis{
     margin:18px 0 0;font-size:17px;line-height:1.5;color:rgba(255,255,255,.86);
@@ -149,6 +158,12 @@
   .btn-play{background:#fff;color:#0a0a0a}
   .btn-play:hover{background:rgba(255,255,255,.78)}
   .btn-info{background:rgba(109,109,110,.62);color:#fff;backdrop-filter:blur(4px)}
+  .btn-travado{
+    background:rgba(255,255,255,.1);color:rgba(255,255,255,.72);
+    border:1px solid rgba(255,255,255,.2);cursor:default;
+  }
+  .btn-travado:active{transform:none}
+  .btn-travado svg{width:17px;height:17px;flex:0 0 auto}
   .btn-info:hover{background:rgba(109,109,110,.42)}
 
   .age-tag{
@@ -261,6 +276,31 @@
     opacity:0;transition:opacity .4s var(--ease);
   }
   .poster video.tocando{opacity:1}
+  /* card travado: enquanto o video nao sobe, a foto fica borrada com cadeado */
+  .poster.travado img{filter:blur(10px) brightness(.58);transform:scale(1.08)}
+  .trava{
+    position:absolute;inset:0;z-index:4;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:9px;padding-bottom:14%;
+    color:#fff;
+  }
+  .trava .cadeado{
+    width:40px;height:40px;border-radius:50%;
+    background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.28);
+    backdrop-filter:blur(8px);
+    display:grid;place-items:center;
+  }
+  .trava .cadeado svg{width:19px;height:19px}
+  .trava .txt{
+    font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.8);
+  }
+  /* o titulo continua legivel por cima do borrado */
+  .poster.travado .art{z-index:5}
+  .poster.travado .shade{z-index:3}
+  /* não faz sentido mostrar progresso de um vídeo que ainda não existe */
+  .poster.travado .bar{display:none}
+
   /* selo de que esse card tem video */
   .poster .temvideo{
     position:absolute;left:9px;top:9px;z-index:3;
@@ -621,14 +661,15 @@
   <!-- CARTA -->
   <section class="letter-band" id="carta" data-rise>
     <div>
-      <span class="eyebrow">Episódio final · <b>escrito à mão</b></span>
+      <span class="eyebrow">Episódio final · <b>em breve</b></span>
       <h3>A carta.</h3>
       <p>
         Esse aqui não tem vídeo. É a letra dele, no papel, do jeito que sai errado mesmo.
         Um ano cabe em muita coisa — mas essa parte só cabia escrita à mão.
+        Ainda está sendo escrita.
       </p>
       <div class="cta">
-        <button class="btn btn-play" data-open="carta">Abrir a carta</button>
+        <button class="btn btn-travado" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>&nbsp; Em breve</button>
       </div>
     </div>
     <div class="seal"><span>D<em>&amp;</em>A</span></div>
@@ -735,8 +776,8 @@ if (!reduce) {
     { duration: 1, delay: stagger(.09, { startDelay: .15 }), ease: [.22, 1, .36, 1] });
 
   /* zoom lento de entrada — respeita o enquadramento do CSS em cada largura */
-  const SC = innerWidth >= 1000 ? 1.20 : innerWidth <= 760 ? 1.02 : 1.06;
-  const TX = innerWidth >= 1000 ? "9%" : "0%";
+  const SC = innerWidth >= 1000 ? 1.34 : innerWidth >= 760 ? 1.2 : 1.02;
+  const TX = innerWidth >= 1000 ? "14%" : innerWidth >= 760 ? "9%" : "0%";
   animate(document.querySelector("[data-hero-media] img"),
     { opacity: [0, 1], scale: [SC * 1.09, SC], x: [TX, TX] },
     { duration: 2.1, ease: [.22, 1, .36, 1] });
@@ -754,6 +795,7 @@ if (!reduce) {
 }
 
 /* ---------- monta os cards no formato netflix ---------- */
+const VIDEOS_PRONTOS = new Set();
 const esc = s => s.replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
 document.querySelectorAll(".card").forEach(card => {
@@ -781,9 +823,34 @@ document.querySelectorAll(".card").forEach(card => {
   }
 
 
-  /* preview em video: só carrega quando o mouse chega, e some se o arquivo não existir */
+  /* enquanto o vídeo não existir, o card fica travado: foto borrada + cadeado */
   const src = poster.dataset.video;
-  if (src && matchMedia("(hover:hover) and (pointer:fine)").matches){
+  if (src){
+    poster.classList.add("travado");
+    const trava = document.createElement("div");
+    trava.className = "trava";
+    trava.innerHTML =
+      `<span class="cadeado">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+           <rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/>
+           <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>
+         </svg>
+       </span>
+       <span class="txt">Em breve</span>`;
+    poster.appendChild(trava);
+
+    /* se o arquivo já estiver no ar, destrava sozinho */
+    fetch(src, { method: "HEAD" })
+      .then(r => { if (r.ok){ VIDEOS_PRONTOS.add(src); destrava(); } })
+      .catch(() => {});
+
+    function destrava(){
+      poster.classList.remove("travado");
+      trava.remove();
+      if (matchMedia("(hover:hover) and (pointer:fine)").matches) ligaPreview();
+    }
+
+    function ligaPreview(){
     let vid = null, timer = null;
 
     const selo = document.createElement("span");
@@ -812,6 +879,7 @@ document.querySelectorAll(".card").forEach(card => {
     };
     card.addEventListener("pointerenter", liga);
     card.addEventListener("pointerleave", desliga);
+    }
   }
 
   /* painel que abre no hover */
@@ -986,16 +1054,22 @@ function openSheet(key){
        </div>
      </div>`;
 
-  /* "Assistir" troca a capa pelo vídeo de verdade */
+  /* "Assistir" troca a capa pelo vídeo de verdade — se ainda não subiu, nasce travado */
   const btnPlay = sHero.querySelector("[data-play]");
-  if (d.video && btnPlay){
+  if (d.video && btnPlay && !VIDEOS_PRONTOS.has(d.video)){
+    btnPlay.className = "btn btn-travado";
+    btnPlay.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>&nbsp; Em breve`;
+    btnPlay.disabled = true;
+  } else if (d.video && btnPlay){
     btnPlay.addEventListener("click", () => {
       const v = document.createElement("video");
       v.src = d.video; v.controls = true; v.autoplay = true; v.playsInline = true;
       /* sem o arquivo ainda: mantém a capa e avisa em vez de mostrar player quebrado */
       v.addEventListener("error", () => {
         sHero.classList.remove("comvideo");
-        btnPlay.textContent = "vídeo ainda não subiu";
+        v.remove();
+        btnPlay.className = "btn btn-travado";
+        btnPlay.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>&nbsp; Em breve`;
         btnPlay.disabled = true;
       }, { once: true });
       sHero.classList.add("comvideo");
