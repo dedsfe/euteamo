@@ -214,6 +214,33 @@ section.foto.on-soft{background:var(--wash)}
 }
 .bigbtn:hover{transform:scale(1.03)} .bigbtn:active{transform:scale(.96)}
 
+/* ── CHARADA DO FINAL ───────────── */
+.quiz{
+  border:1px solid var(--line); border-radius:26px; background:#fff;
+  padding:clamp(24px,5vw,38px); max-width:560px; margin:0 auto;
+}
+.quiz .pergunta{
+  font-size:clamp(20px,4.4vw,26px); font-weight:650; letter-spacing:-.02em;
+  line-height:1.25; margin:0 0 22px;
+}
+.quiz .ops{display:grid; gap:10px}
+.quiz .op{
+  width:100%; text-align:left; cursor:pointer; font-family:inherit;
+  background:var(--wash); border:1px solid var(--line); color:var(--ink);
+  font-size:16px; font-weight:500; padding:16px 20px; border-radius:16px;
+  min-height:54px; transition:transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.quiz .op:hover{transform:scale(1.015); background:#fff}
+.quiz .op:active{transform:scale(.98)}
+.quiz .op.errou{background:#fff0f0; border-color:#ffc9c9; color:#c92a2a}
+.quiz .op.acertou{background:#eafaf0; border-color:#a8e6c1; color:#12813f}
+.quiz .aviso{
+  margin:18px 0 0; font-size:15px; line-height:1.45; min-height:22px;
+  color:var(--ink-3);
+}
+.quiz .aviso strong{color:var(--ink)}
+.quiz .cadeado{font-size:26px; display:block; margin-bottom:12px}
+
 /* ── REVEAL NO SCROLL ───────────── */
 .rv{opacity:0; transform:translateY(26px); transition:opacity .65s var(--ease), transform .65s var(--ease)}
 .rv.in{opacity:1; transform:none}
@@ -519,6 +546,20 @@ section.foto.on-soft{background:var(--wash)}
   <p class="muted" style="margin-bottom:0"><strong style="color:var(--ink)">P.S.3</strong> — uma vez você me falou que quando eu tivesse dia ruim ia ter uma doidinha aqui pra falar besteira até eu rir. cumpriu. um ano inteirinho. <strong style="color:var(--ink)">obrigado, mô.</strong> 🫶</p>
 </section>
 
+<!-- ═══ CHARADA: a chave da última página ═══ -->
+<section class="rv" id="charada">
+  <div class="eyebrow">Tem mais uma coisa</div>
+  <h2>Só que essa aqui tá trancada</h2>
+  <p class="muted">Eu fiz mais uma página pra você. Mas não vou entregar de graça — se é sua, você sabe a resposta. Erra à vontade, eu só faço outra pergunta 😌</p>
+
+  <div class="quiz" id="quiz">
+    <span class="cadeado">🔒</span>
+    <p class="pergunta" id="qPergunta"></p>
+    <div class="ops" id="qOpcoes"></div>
+    <p class="aviso" id="qAviso"></p>
+  </div>
+</section>
+
 <footer style="text-align:center; padding:30px var(--pad) calc(env(safe-area-inset-bottom) + 40px); font-size:12px; color:#a1a1a6; background:var(--paper)">
   Edição Especial de 1 Ano &nbsp;·&nbsp; 10.08.2026 &nbsp;·&nbsp; escrito por um nerd bom 🤓
 </footer>
@@ -601,6 +642,84 @@ section.foto.on-soft{background:var(--wash)}
     });
   }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
   alvos.forEach(function(el){ io.observe(el); });
+})();
+
+// charada que destranca a última página
+(function(){
+  var PERGUNTAS = [
+    { p: 'Por quantos dias seguidos eu acordei às três da manhã pra orar por nós?',
+      certa: '5 dias', ops: ['3 dias', '5 dias', '7 dias', '30 dias'] },
+    { p: 'Quantos quilômetros tem entre a sua casa e a minha?',
+      certa: '70 km', ops: ['7 km', '40 km', '70 km', '120 km'] },
+    { p: 'Qual foi o dia em que eu vi suas fotos e não consegui mais evitar?',
+      certa: '27 de maio', ops: ['10 de agosto', '27 de maio', '23 de julho', '13 de agosto'] }
+  ];
+  var ERROS = [
+    'Essa não, mô 😅 tenta essa aqui:',
+    'Quase! Mas não. Vai outra:',
+    'Errrrou 🫠 última chance… mentira, tem quantas você quiser:',
+    'Nãããão. Você sabe essa, vai:'
+  ];
+
+  var elP = document.getElementById('qPergunta');
+  var elO = document.getElementById('qOpcoes');
+  var elA = document.getElementById('qAviso');
+  if (!elP) return;
+
+  var atual = -1, travado = false;
+
+  function embaralha(a){
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function sorteia(){
+    // nunca repete a pergunta que acabou de errar
+    var i;
+    do { i = Math.floor(Math.random() * PERGUNTAS.length); }
+    while (PERGUNTAS.length > 1 && i === atual);
+    atual = i;
+    mostra(PERGUNTAS[i]);
+  }
+
+  function mostra(q){
+    travado = false;
+    elP.textContent = q.p;
+    elO.innerHTML = '';
+    embaralha(q.ops).forEach(function(texto){
+      var b = document.createElement('button');
+      b.className = 'op';
+      b.type = 'button';
+      b.textContent = texto;
+      b.addEventListener('click', function(){ responde(b, texto === q.certa); });
+      elO.appendChild(b);
+    });
+  }
+
+  function responde(botao, acertou){
+    if (travado) return;
+    travado = true;
+
+    if (acertou){
+      botao.classList.add('acertou');
+      elA.innerHTML = '<strong>É sua mesmo.</strong> Abrindo o que eu fiz pra você… 🤍';
+      setTimeout(function(){ location.href = 'tv/'; }, 1400);
+      return;
+    }
+
+    botao.classList.add('errou');
+    elA.textContent = ERROS[Math.floor(Math.random() * ERROS.length)];
+    setTimeout(function(){
+      sorteia();
+      elA.textContent = '';
+    }, 1300);
+  }
+
+  sorteia();
 })();
 </script>
 </body>
